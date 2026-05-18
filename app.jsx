@@ -5,7 +5,7 @@ const { useEffect, useRef, useState } = React;
 
 // ── Tweak defaults ─────────────────────────────────────────────────────────
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "palette": "dossie",
+  "palette": "obsidian",
   "fonts": "operacional"
 } /*EDITMODE-END*/;
 
@@ -286,9 +286,9 @@ const MISSIONS = [
   status: "ativo",
   statusLabel: "Ativo · Recrutando",
   brief: "Preparação estratégica completa para quem almeja a carreira de oficial da PMMG.",
-  duration: "Anual",
+  duration: "ATÉ A APROVAÇÃO",
   next: "Em aberto",
-  level: "Avançado",
+  level: "Bacharel em Direito",
   href: "https://mag.tenentegustavo.com.br/cfo"
 },
 {
@@ -297,9 +297,9 @@ const MISSIONS = [
   status: "ativo",
   statusLabel: "Ativo · Recrutando",
   brief: "Base sólida, constância e evolução prática até o dia da prova. Para quem começa do zero.",
-  duration: "6–12 meses",
+  duration: "ATÉ A APROVAÇÃO",
   next: "Em aberto",
-  level: "Iniciante → Pleno",
+  level: "Esnino Superior",
   href: "https://mag.tenentegustavo.com.br/cfsd"
 },
 {
@@ -308,9 +308,9 @@ const MISSIONS = [
   status: "ativo",
   statusLabel: "Ativo · Recrutando",
   brief: "Preparação técnica e tática para a progressão à graduação de sargento da PMMG. Liderança operacional.",
-  duration: "8–10 meses",
+  duration: "1 ANO",
   next: "Em aberto",
-  level: "Intermediário",
+  level: "Cabos e Soldados PMMG",
   href: "https://mag.tenentegustavo.com.br/cfs"
 },
 {
@@ -319,9 +319,9 @@ const MISSIONS = [
   status: "missao",
   statusLabel: "Em missão",
   brief: "Profundidade teórica, precisão jurídica e preparação refinada para oficiais da reserva.",
-  duration: "Sob medida",
+  duration: "ATÉ A APROVAÇÃO",
   next: "Consultar",
-  level: "Especialista",
+  level: "Sargentos da PMMG",
   href: "https://mag.tenentegustavo.com.br/cho"
 }];
 
@@ -420,7 +420,7 @@ function Footer() {
 
 // ── APP ────────────────────────────────────────────────────────────────────
 function App() {
-  const [t] = React.useState(TWEAK_DEFAULTS);
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const scrollRef = useScrollProgress();
 
   useEffect(() => {
@@ -438,7 +438,7 @@ function App() {
         <MentorStrip />
       </main>
       <Footer />
-      {false && (
+
       <TweaksPanel title="Tweaks · MAG">
         <TweakSection label="Paleta">
           <TweakColor
@@ -457,7 +457,6 @@ function App() {
           
         </TweakSection>
       </TweaksPanel>
-      )}
     </>);
 
 }
