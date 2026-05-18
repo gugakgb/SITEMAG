@@ -5,7 +5,7 @@ const { useEffect, useRef, useState } = React;
 
 // ── Tweak defaults ─────────────────────────────────────────────────────────
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "palette": "dossie",
+  "palette": "obsidian",
   "fonts": "operacional"
 } /*EDITMODE-END*/;
 
@@ -420,7 +420,7 @@ function Footer() {
 
 // ── APP ────────────────────────────────────────────────────────────────────
 function App() {
-  const [t] = React.useState(TWEAK_DEFAULTS);
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const scrollRef = useScrollProgress();
 
   useEffect(() => {
@@ -438,7 +438,7 @@ function App() {
         <MentorStrip />
       </main>
       <Footer />
-      {false && (
+
       <TweaksPanel title="Tweaks · MAG">
         <TweakSection label="Paleta">
           <TweakColor
@@ -457,7 +457,6 @@ function App() {
           
         </TweakSection>
       </TweaksPanel>
-      )}
     </>);
 
 }
