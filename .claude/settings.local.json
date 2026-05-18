@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git branch *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git pull *)",
+      "Bash(Remove-Item -Recurse -Force \"SITEMAG\\\\.git\" -ErrorAction SilentlyContinue)"
+    ]
+  }
+}
