@@ -299,7 +299,7 @@ const MISSIONS = [
   brief: "Base sólida, constância e evolução prática até o dia da prova. Para quem começa do zero.",
   duration: "ATÉ A APROVAÇÃO",
   next: "Em aberto",
-  level: "Ensino Superior",
+  level: "Esnino Superior",
   href: "https://mag.tenentegustavo.com.br/cfsd"
 },
 {
