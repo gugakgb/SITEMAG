@@ -1,0 +1,35 @@
+# Mentoria MAG · Arsenal de Operações
+
+Site estático. Para publicar, basta enviar os arquivos desta pasta para qualquer hospedagem estática.
+
+## Arquivos
+- `index.html`        — página principal
+- `styles.css`        — estilos
+- `app.jsx`           — React (cursos, mentor, fundo tático)
+
+## Como publicar
+
+### Netlify (mais fácil)
+1. Acesse https://app.netlify.com/drop
+2. Arraste a pasta inteira para a área indicada
+3. URL pública gerada na hora
+
+### Vercel
+1. https://vercel.com → New Project → Import → "Browse" upload
+2. Ou conecte um repositório GitHub com estes arquivos
+
+### Cloudflare Pages
+1. https://pages.cloudflare.com → Create → Upload assets
+2. Arraste a pasta
+
+### Hospedagem tradicional (cPanel, FTP)
+Envie todos os arquivos para a pasta `public_html` (ou raiz pública) do seu domínio.
+
+## Domínio próprio
+Em qualquer das plataformas acima, configure o domínio customizado (ex.: tenentegustavo.com.br)
+e ajuste os DNS conforme as instruções da plataforma.
+
+## Observação técnica
+O site usa Babel no navegador para processar JSX. Funciona perfeitamente, mas adiciona
+~150-300ms de carregamento. Para máxima performance no futuro, considere pré-compilar
+o JSX com Vite ou esbuild.
