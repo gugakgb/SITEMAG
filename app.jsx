@@ -5,7 +5,7 @@ const { useEffect, useRef, useState } = React;
 
 // ── Tweak defaults ─────────────────────────────────────────────────────────
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "palette": "obsidian",
+  "palette": "dossie",
   "fonts": "operacional"
 } /*EDITMODE-END*/;
 
@@ -299,7 +299,7 @@ const MISSIONS = [
   brief: "Base sólida, constância e evolução prática até o dia da prova. Para quem começa do zero.",
   duration: "ATÉ A APROVAÇÃO",
   next: "Em aberto",
-  level: "Esnino Superior",
+  level: "Ensino Superior",
   href: "https://mag.tenentegustavo.com.br/cfsd"
 },
 {
@@ -420,7 +420,7 @@ function Footer() {
 
 // ── APP ────────────────────────────────────────────────────────────────────
 function App() {
-  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const t = TWEAK_DEFAULTS;
   const scrollRef = useScrollProgress();
 
   useEffect(() => {
@@ -431,45 +431,14 @@ function App() {
   return (
     <>
       <TacticalBackdrop scrollRef={scrollRef} />
-
       <Hud scrollRef={scrollRef} />
       <main>
         <Hero />
         <MentorStrip />
       </main>
       <Footer />
-
-      <TweaksPanel title="Tweaks · MAG">
-        <TweakSection label="Paleta">
-          <TweakColor
-            label="Tema"
-            value={paletteValue(t.palette)}
-            options={PALETTE_OPTIONS}
-            onChange={(v) => setTweak("palette", paletteKey(v))} />
-          
-        </TweakSection>
-        <TweakSection label="Tipografia">
-          <TweakRadio
-            label="Família"
-            value={t.fonts}
-            options={FONT_OPTIONS}
-            onChange={(v) => setTweak("fonts", v)} />
-          
-        </TweakSection>
-      </TweaksPanel>
-    </>);
-
-}
-
-function paletteValue(key) {
-  const i = PALETTE_KEYS.indexOf(key);
-  return PALETTE_OPTIONS[i >= 0 ? i : 0];
-}
-function paletteKey(arr) {
-  const i = PALETTE_OPTIONS.findIndex(
-    (p) => JSON.stringify(p).toLowerCase() === JSON.stringify(arr).toLowerCase()
+    </>
   );
-  return PALETTE_KEYS[i >= 0 ? i : 0];
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
