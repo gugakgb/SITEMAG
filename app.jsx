@@ -5,7 +5,7 @@ const { useEffect, useRef, useState } = React;
 
 // ── Tweak defaults ─────────────────────────────────────────────────────────
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "palette": "obsidian",
+  "palette": "dossie",
   "fonts": "operacional"
 } /*EDITMODE-END*/;
 
