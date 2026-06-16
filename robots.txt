@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tenentegustavo.com.br/sitemap.xml
