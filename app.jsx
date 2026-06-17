@@ -384,6 +384,9 @@ function MentorStrip() {
           target="_blank" rel="noopener">
             Falar com o comando <span className="arrow">→</span>
           </a>
+          <a className="btn btn-ghost" href="/blog">
+            Blog <span className="arrow">→</span>
+          </a>
           <a className="btn-icon" href="https://www.instagram.com/proftenentegustavo/"
           target="_blank" rel="noopener" aria-label="Instagram">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -412,7 +415,7 @@ function Footer() {
         <img src="https://tenentegustavo.com.br/logo-mag.png" alt="" />
         <span>© 2026 · Mentoria MAG · Ten. Gustavo</span>
       </div>
-      <div>PMMG · CFO · CFSD · CFS · CHO</div>
+      <div><a href="/blog" style={{ color: "var(--gold)" }}>Blog</a> · PMMG · CFO · CFSD · CFS · CHO</div>
       <div>v.2.0 · Arsenal Operacional</div>
     </footer>);
 
