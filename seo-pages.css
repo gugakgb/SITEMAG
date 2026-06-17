@@ -378,3 +378,17 @@ h1 {
   .cta-band { padding: 30px; }
   .prose { font-size: 17.5px; }
 }
+
+
+/* Botao compartilhar */
+.share-row { margin-top: 20px; }
+.share-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  border: 1px solid var(--gold-line); background: var(--gold-soft);
+  color: var(--gold); border-radius: 999px; padding: 10px 20px;
+  font-family: var(--sans); font-size: 14.5px; font-weight: 600; cursor: pointer;
+  transition: background .18s ease, transform .18s ease;
+}
+.share-btn:hover { background: rgba(156,124,60,0.18); transform: translateY(-1px); }
+.share-btn svg { width: 17px; height: 17px; }
+.share-ok { color: var(--olive-2); }

@@ -46,6 +46,7 @@
           <h1>Como passar no concurso da <em>PMMG</em>: o passo a passo</h1>
           <div class="breadcrumbs"><a href="/">Mentoria MAG</a> / <a href="/blog">Blog</a> / Como passar na PMMG</div>
           <div class="post-meta">Por Prof. Tenente Gustavo <span class="dot"></span> Tenente da PMMG e neurocientista <span class="dot"></span> 8 min de leitura</div>
+          <div class="share-row"><button class="share-btn" type="button" onclick="magShare(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>Compartilhar</button></div>
         </div>
       </div>
     </section>
@@ -106,5 +107,6 @@
     </section>
   </main>
   <footer class="footer"><div class="shell"><p>© 2026 Mentoria MAG · Tenente Gustavo. Conteúdo informativo e independente sobre concursos da PMMG.</p></div></footer>
+  <script>function magShare(b){var t=(document.querySelector('meta[property="og:title"]')||{}).content||document.title;var u=location.href.split("?")[0];if(navigator.share){navigator.share({title:t,url:u}).catch(function(){});}else{navigator.clipboard&&navigator.clipboard.writeText(u);window.open("https://wa.me/?text="+encodeURIComponent(t+" "+u),"_blank","noopener");}}</script>
 </body>
 </html>
