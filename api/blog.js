@@ -5,8 +5,8 @@ import { marked } from 'marked';
 
 const ROOT = 'https://tenentegustavo.com.br';
 const MAG = 'https://mag.tenentegustavo.com.br';
-const SUPA_URL = process.env.SUPABASE_URL || 'https://xckxgsbbitgbrlkoivgg.supabase.co';
-const SUPA_KEY = process.env.SUPABASE_ANON_KEY || '';
+const SUPA_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://xckxgsbbitgbrlkoivgg.supabase.co';
+const SUPA_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
 const DEFAULT_OG = `${ROOT}/blog-og-default.png`;
 
 const supabase = createClient(SUPA_URL, SUPA_KEY || 'anon-key-missing', { auth: { persistSession: false } });
