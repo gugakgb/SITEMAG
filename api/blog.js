@@ -85,6 +85,7 @@ function renderArticle(p) {
   <link rel="canonical" href="${url}" />
   <link rel="stylesheet" href="/seo-pages.css" />
   <link rel="icon" type="image/png" href="/logo-mag.png" />
+  <style>.hero-inner{min-height:auto;padding:60px 0 40px}.hero h1{max-width:26ch;font-size:clamp(32px,3.2vw,46px);margin-bottom:14px}.post-meta{margin-top:14px}</style>
   <meta property="og:title" content="${esc(title)}" />
   <meta property="og:description" content="${esc(desc)}" />
   <meta property="og:type" content="article" />
