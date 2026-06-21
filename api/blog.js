@@ -118,6 +118,7 @@ ${CTA}
   </main>
 ${FOOTER}
 ${SHARE_SCRIPT}
+  <script>(function(){try{var K='mag_vid',v=localStorage.getItem(K);if(!v){v=(window.crypto&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(36).slice(2));localStorage.setItem(K,v);}fetch('${SUPA_URL}/rest/v1/blog_views',{method:'POST',headers:{apikey:'${SUPA_KEY}',Authorization:'Bearer ${SUPA_KEY}','Content-Type':'application/json',Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify({post_slug:'${p.slug}',visitor_id:v})}).catch(function(){});}catch(e){}})();</script>
 </body>
 </html>`;
 }
