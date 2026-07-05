@@ -306,35 +306,93 @@ h1 {
 }
 .post-meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
 
+/* Barra de progresso de leitura (topo da página) */
+.read-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-2));
+  z-index: 60;
+  transition: width 0.08s linear;
+}
+
 /* Corpo do artigo (leitura) */
 .prose {
-  width: min(720px, calc(100% - 40px));
+  width: min(700px, calc(100% - 40px));
   margin: 0 auto;
-  padding: 56px 0;
-  font-size: 18.5px;
-  line-height: 1.8;
+  padding: 56px 0 72px;
+  font-size: 19px;
+  line-height: 1.82;
+  color: var(--ink-soft);
+  font-feature-settings: "liga" 1, "kern" 1;
+  text-rendering: optimizeLegibility;
+}
+.prose > p {
+  margin: 0 0 24px;
+  color: var(--ink-soft);
+  text-align: justify;
+  text-justify: inter-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  hyphenate-limit-chars: 6 3 3;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+/* Abertura: primeiro parágrafo com capitular editorial e um respiro maior */
+.prose > p:first-of-type {
+  font-size: 20.5px;
   color: var(--ink);
 }
-.prose > p { margin: 0 0 22px; color: var(--ink-soft); }
-.prose h2 {
-  margin: 44px 0 14px;
-  font-size: clamp(24px, 3vw, 32px);
+.prose > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--serif);
   font-weight: 600;
+  font-size: 3.4em;
+  line-height: 0.82;
+  padding: 8px 12px 0 0;
+  color: var(--gold);
 }
-.prose h3 { margin: 30px 0 10px; font-size: 22px; font-weight: 600; }
-.prose ul, .prose ol { margin: 0 0 22px; padding-left: 22px; color: var(--ink-soft); }
-.prose li { margin-bottom: 8px; }
+.prose h2 {
+  margin: 52px 0 16px;
+  font-family: var(--serif);
+  font-size: clamp(25px, 3vw, 33px);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+/* Fiozinho dourado sob os subtítulos — dá ritmo e elegância */
+.prose h2::after {
+  content: "";
+  display: block;
+  width: 46px;
+  height: 3px;
+  margin-top: 12px;
+  border-radius: 2px;
+  background: var(--gold-line);
+}
+.prose h3 { margin: 34px 0 10px; font-family: var(--serif); font-size: 23px; font-weight: 600; color: var(--ink); }
+.prose ul, .prose ol { margin: 0 0 24px; padding-left: 24px; color: var(--ink-soft); }
+.prose li { margin-bottom: 10px; padding-left: 4px; }
+.prose ul li::marker { color: var(--gold); }
+.prose ol li::marker { color: var(--gold); font-weight: 600; }
 .prose strong { color: var(--ink); font-weight: 600; }
 .prose blockquote {
-  margin: 26px 0;
-  padding: 4px 0 4px 22px;
-  border-left: 3px solid var(--gold-line);
-  color: var(--ink-soft);
+  margin: 32px 0;
+  padding: 18px 26px;
+  border-left: 4px solid var(--gold);
+  background: var(--gold-soft);
+  border-radius: 0 12px 12px 0;
+  color: var(--ink);
   font-family: var(--serif);
   font-style: italic;
   font-size: 21px;
+  line-height: 1.55;
 }
-.prose a { color: var(--olive-2); text-decoration: underline; }
+.prose blockquote p { margin: 0; text-align: left; hyphens: none; }
+.prose a { color: var(--olive-2); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.prose a:hover { color: var(--gold); }
 .prose .lead {
   font-family: var(--serif);
   font-size: 22px;
@@ -342,7 +400,7 @@ h1 {
   color: var(--ink);
   margin-bottom: 28px;
 }
-.prose hr { border: none; border-top: 1px solid var(--line); margin: 40px 0; }
+.prose hr { border: none; border-top: 1px solid var(--line); margin: 44px 0; }
 
 /* Listagem do blog */
 .post-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }

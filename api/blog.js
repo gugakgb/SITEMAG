@@ -25,6 +25,26 @@ const fmtDate = (iso) => {
 
 const readingOf = (p) => p.reading_minutes || Math.max(1, Math.round((p.content_md || '').trim().split(/\s+/).filter(Boolean).length / 200));
 
+// Alguns artigos antigos foram salvos com as quebras de linha REMOVIDAS (um bug no
+// pipeline de IA apagava os \n). Como os espaços entre palavras sobreviveram, os limites
+// de bloco (títulos, listas, parágrafos) ficaram grudados e o marked mostrava ## ** - crus.
+// Aqui restauramos esses limites — mas SÓ quando o texto parece corrompido, para não mexer
+// em artigos já bem formatados.
+function normalizeMarkdown(md) {
+  let s = String(md || '').replace(/\r\n?/g, '\n');
+  const headingGlued = /[^\n#](#{1,4})\s/.test(s);                // marcador ## no meio de uma linha (não no início)
+  const listGlued = /\S(- )/.test(s);
+  const almostNoBreaks = s.length > 800 && (s.match(/\n/g) || []).length < 4;
+  if (!headingGlued && !listGlued && !almostNoBreaks) return s; // já está bom
+  s = s.replace(/([^\n#])(#{1,4}\s)/g, '$1\n\n$2');               // título grudado no texto (sem partir ## bem formatado)
+  s = s.replace(/([^\n])(> )/g, '$1\n\n$2');                       // citação grudada
+  s = s.replace(/([^\n\s])(- )/g, '$1\n$2');                       // item de lista grudado
+  s = s.replace(/([.!?:])(\*\*(?=[0-9A-Za-zÀ-ÿ]))/g, '$1\n\n$2'); // parágrafo que ABRE em **negrito** (só após fim de frase + seguido de letra; não toca o ** de fechamento)
+  s = s.replace(/([a-zà-ÿ0-9.,:;!?)»"”])([A-ZÀ-Þ])/g, '$1\n\n$2'); // parágrafo perdido (minúscula→Maiúscula sem espaço)
+  s = s.replace(/\n{3,}/g, '\n\n');
+  return s.trim();
+}
+
 const NAV = `
   <header class="topbar">
     <nav class="nav" aria-label="Navegação principal">
@@ -34,6 +54,9 @@ const NAV = `
   </header>`;
 
 const SHARE_SCRIPT = `<script>function magShare(b){var t=(document.querySelector('meta[property="og:title"]')||{}).content||document.title;var u=location.href.split("?")[0];if(navigator.share){navigator.share({title:t,url:u}).catch(function(){});}else{navigator.clipboard&&navigator.clipboard.writeText(u);window.open("https://wa.me/?text="+encodeURIComponent(t+" "+u),"_blank","noopener");}}</script>`;
+
+// Barra de progresso de leitura: acompanha o quanto o leitor já rolou do artigo.
+const PROGRESS_SCRIPT = `<script>(function(){var b=document.getElementById('read-progress');if(!b)return;var a=document.querySelector('.prose');function u(){var el=a||document.body;var start=el.offsetTop||0;var total=(el.offsetHeight||document.body.scrollHeight)- window.innerHeight;var y=window.scrollY-start;var p=total>0?Math.max(0,Math.min(1,y/total)):0;b.style.width=(p*100).toFixed(1)+'%';}window.addEventListener('scroll',u,{passive:true});window.addEventListener('resize',u);u();})();</script>`;
 
 const CTA = `
     <section class="section">
@@ -60,7 +83,7 @@ function renderArticle(p) {
   const cat = p.category || 'Artigo';
   const mins = readingOf(p);
   const date = fmtDate(p.published_at);
-  const bodyHtml = marked.parse(p.content_md || '', { mangle: false, headerIds: false });
+  const bodyHtml = marked.parse(normalizeMarkdown(p.content_md), { mangle: false, headerIds: false });
   const ld = {
     '@context': 'https://schema.org',
     '@type': p.schema_type === 'NewsArticle' ? 'NewsArticle' : 'BlogPosting',
@@ -98,6 +121,7 @@ function renderArticle(p) {
   <script type="application/ld+json">${JSON.stringify(ld)}</script>
 </head>
 <body>
+  <div class="read-progress" id="read-progress"></div>
 ${NAV}
   <main>
     <section class="hero">
@@ -118,6 +142,7 @@ ${CTA}
   </main>
 ${FOOTER}
 ${SHARE_SCRIPT}
+${PROGRESS_SCRIPT}
   <script>(function(){try{var K='mag_vid',v=localStorage.getItem(K);if(!v){v=(window.crypto&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(36).slice(2));localStorage.setItem(K,v);}fetch('${SUPA_URL}/rest/v1/blog_views',{method:'POST',headers:{apikey:'${SUPA_KEY}',Authorization:'Bearer ${SUPA_KEY}','Content-Type':'application/json',Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify({post_slug:'${p.slug}',visitor_id:v})}).catch(function(){});}catch(e){}})();</script>
 </body>
 </html>`;
