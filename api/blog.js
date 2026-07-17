@@ -213,7 +213,11 @@ export default async function handler(req, res) {
   try {
     const slug = (req.query && req.query.slug) ? String(req.query.slug) : '';
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.setHeader('Cache-Control', 's-maxage=120, stale-while-revalidate=600');
+    // Cache curto: o mentor edita/publica e espera ver a mudança quase na hora.
+    // s-maxage baixo = a maioria das visitas já pega o conteúdo fresco; o
+    // stale-while-revalidate cobre só o instante entre uma edição e a próxima
+    // visita, sem deixar o artigo "preso" com a versão antiga por minutos.
+    res.setHeader('Cache-Control', 's-maxage=10, stale-while-revalidate=30');
 
     if (slug) {
       const { data } = await supabase.from('blog_posts').select('*').eq('slug', slug).eq('status', 'published').maybeSingle();
