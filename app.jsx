@@ -372,15 +372,22 @@ const MISSION_CODES = MISSION_SLUGS.map((s) => s.toUpperCase());
 // Palavras comuns que não servem de sigla ao garimpar o nome do produto
 const CODE_STOPWORDS = ["POR", "DO", "DA", "DE", "DOS", "DAS", "NO", "NA", "EM", "COM", "PMMG", "MAG", "CURSO"];
 
-// Sigla grande do card. Usa o apelido curto do painel; se ele repetir o código
-// de uma missão fixa (ex.: CRS veio cadastrado como "CFSD"), garimpa uma sigla
-// própria no nome do produto (ex.: "CRS" em "POR DENTRO DO CRS PMMG").
+// Sigla grande do card. Prioridade: campo "Sigla do card no site raiz"
+// (card_code, preenchido no painel > Campanhas). Depois o apelido curto — a
+// menos que ele repita o código de uma missão fixa (ex.: CRS veio cadastrado
+// como "CFSD"). Por último, garimpa uma PALAVRA INTEIRA de 2–4 letras no nome
+// do produto (ex.: "CRS" em "POR DENTRO DO CRS PMMG").
 function cardCode(c) {
+  const own = String(c.card_code || "").trim();
+  if (own) return own;
   const short = String(c.display_short || "").trim();
   if (short && !MISSION_CODES.includes(short.toUpperCase())) return short;
-  const words = String(c.product_name || "").toUpperCase().match(/[A-ZÀ-Ú]{2,4}/g) || [];
-  const own = words.find((w) => !CODE_STOPWORDS.includes(w) && !MISSION_CODES.includes(w));
-  return own || short || "Curso";
+  const words = String(c.product_name || "").toUpperCase().split(/[^A-ZÀ-Ú]+/);
+  const mined = words.find((w) =>
+  w.length >= 2 && w.length <= 4 &&
+  !CODE_STOPWORDS.includes(w) && !MISSION_CODES.includes(w)
+  );
+  return mined || short || "Curso";
 }
 
 function ExtraCourses() {
@@ -388,7 +395,7 @@ function ExtraCourses() {
 
   useEffect(() => {
     const url = `${MAG_SUPABASE_URL}/rest/v1/landing_campaigns` +
-    `?select=slug,product_name,display_short,category,hero_subtitle,hero_eyebrow` +
+    `?select=slug,product_name,display_short,card_code,category,hero_subtitle,hero_eyebrow` +
     `&active=eq.true&order=product_name.asc`;
     fetch(url, {
       headers: {
