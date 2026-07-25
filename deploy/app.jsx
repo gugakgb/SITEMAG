@@ -359,6 +359,100 @@ function Missions() {
 
 }
 
+// ── CURSOS AVULSOS (automático) ────────────────────────────────────────────
+// Puxa da plataforma (Supabase) toda landing/campanha ATIVA criada no painel
+// (aba Campanhas). O que não for uma das 4 missões fixas vira card aqui —
+// ex.: "Por dentro do CRS da PMMG". Criou landing nova no painel, o card
+// aparece sozinho; desativou a campanha, o card some. Sem mexer neste arquivo.
+const MAG_SUPABASE_URL = "https://xckxgsbbitgbrlkoivgg.supabase.co";
+const MAG_SUPABASE_ANON =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhja3hnc2JiaXRnYnJsa29pdmdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMTA4NDcsImV4cCI6MjA4MjY4Njg0N30.pkyNmOOR12BPBlXbA1H6YtboLO0nIL6MDZF4EfgzV44";
+const MISSION_SLUGS = ["cfo", "cfsd", "cfs", "cho"];
+const MISSION_CODES = MISSION_SLUGS.map((s) => s.toUpperCase());
+// Palavras comuns que não servem de sigla ao garimpar o nome do produto
+const CODE_STOPWORDS = ["POR", "DO", "DA", "DE", "DOS", "DAS", "NO", "NA", "EM", "COM", "PMMG", "MAG", "CURSO"];
+
+// Sigla grande do card. Usa o apelido curto do painel; se ele repetir o código
+// de uma missão fixa (ex.: CRS veio cadastrado como "CFSD"), garimpa uma sigla
+// própria no nome do produto (ex.: "CRS" em "POR DENTRO DO CRS PMMG").
+function cardCode(c) {
+  const short = String(c.display_short || "").trim();
+  if (short && !MISSION_CODES.includes(short.toUpperCase())) return short;
+  const words = String(c.product_name || "").toUpperCase().match(/[A-ZÀ-Ú]{2,4}/g) || [];
+  const own = words.find((w) => !CODE_STOPWORDS.includes(w) && !MISSION_CODES.includes(w));
+  return own || short || "Curso";
+}
+
+function ExtraCourses() {
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    const url = `${MAG_SUPABASE_URL}/rest/v1/landing_campaigns` +
+    `?select=slug,product_name,display_short,category,hero_subtitle,hero_eyebrow` +
+    `&active=eq.true&order=product_name.asc`;
+    fetch(url, {
+      headers: {
+        apikey: MAG_SUPABASE_ANON,
+        Authorization: `Bearer ${MAG_SUPABASE_ANON}`
+      }
+    }).
+    then((r) => r.ok ? r.json() : []).
+    then((rows) => setCourses(
+      (Array.isArray(rows) ? rows : []).filter(
+        (c) => c.slug && !MISSION_SLUGS.includes(String(c.slug).toLowerCase())
+      )
+    )).
+    catch(() => {});
+  }, []);
+
+  if (!courses.length) return null;
+
+  return (
+    <section className="page courses">
+      <div className="courses-head">
+        <div className="eyebrow fade-up d1">Cursos Avulsos · Acesso Imediato</div>
+        <p className="courses-lead fade-up d2">
+          Operações pontuais da Mentoria MAG — adquira um curso específico,
+          sem assinar a mentoria completa.
+        </p>
+      </div>
+      <div className="missions">
+        {courses.map((c, i) =>
+        <a key={c.slug}
+        href={`https://mag.tenentegustavo.com.br/${c.slug}`}
+        target="_blank" rel="noopener"
+        className={`fade-up d${Math.min(3 + i, 7)}`}>
+            <article className="mission" data-status="ativo">
+              <div className="mission-head">
+                <div className="mission-code">{cardCode(c)}</div>
+                <div className="mission-status">Ativo · Venda avulsa</div>
+              </div>
+
+              <div className="mission-title">{c.product_name}</div>
+              <p className="mission-brief">
+                {c.hero_subtitle || c.hero_eyebrow ||
+              "Curso avulso da Mentoria MAG com acesso imediato após a compra."}
+              </p>
+
+              <dl className="mission-meta">
+                <div><dt>Formato</dt><dd>100% online</dd></div>
+                <div><dt>Acesso</dt><dd>Imediato</dd></div>
+                <div><dt>Tipo</dt><dd>Curso avulso</dd></div>
+                <div><dt>Vagas</dt><dd>Abertas</dd></div>
+              </dl>
+
+              <div className="mission-cta">
+                <span>Iniciar briefing</span>
+                <span className="arrow">→</span>
+              </div>
+            </article>
+          </a>
+        )}
+      </div>
+    </section>);
+
+}
+
 // ── MENTOR STRIP ───────────────────────────────────────────────────────────
 function MentorStrip() {
   return (
@@ -383,6 +477,9 @@ function MentorStrip() {
           href="https://wa.me/message/TY7LCCWSM73UN1"
           target="_blank" rel="noopener">
             Falar com o comando <span className="arrow">→</span>
+          </a>
+          <a className="btn btn-ghost" href="/blog">
+            Blog <span className="arrow">→</span>
           </a>
           <a className="btn-icon" href="https://www.instagram.com/proftenentegustavo/"
           target="_blank" rel="noopener" aria-label="Instagram">
@@ -412,7 +509,7 @@ function Footer() {
         <img src="https://tenentegustavo.com.br/logo-mag.png" alt="" />
         <span>© 2026 · Mentoria MAG · Ten. Gustavo</span>
       </div>
-      <div>PMMG · CFO · CFSD · CFS · CHO</div>
+      <div><a href="/blog" style={{ color: "var(--gold)" }}>Blog</a> · PMMG · CFO · CFSD · CFS · CHO</div>
       <div>v.2.0 · Arsenal Operacional</div>
     </footer>);
 
@@ -434,6 +531,7 @@ function App() {
       <Hud scrollRef={scrollRef} />
       <main>
         <Hero />
+        <ExtraCourses />
         <MentorStrip />
       </main>
       <Footer />

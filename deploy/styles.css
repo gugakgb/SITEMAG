@@ -359,6 +359,12 @@ body[data-fonts="editorial"] .mentor-name{text-transform:none;letter-spacing:0}
 .foot-brand{display:flex;align-items:center;gap:10px;color:var(--ink-2)}
 .foot-brand img{width:18px;height:18px;object-fit:contain;opacity:.8}
 
+/* ===== CURSOS AVULSOS ===== */
+.courses{padding:8px 0 56px;display:flex;flex-direction:column;gap:22px}
+.courses .mission-code{font-size:48px} /* siglas maiores (ex.: EAP SGT) cabem no card */
+.courses-head{display:flex;flex-direction:column;gap:10px}
+.courses-lead{font-size:14.5px;line-height:1.55;color:var(--ink-2);max-width:560px}
+
 /* ===== ENTRADAS (animação ao carregar) ===== */
 .fade-up{opacity:0;transform:translateY(14px);
   animation: fadeUp .7s cubic-bezier(.2,.7,.3,1) forwards;}
