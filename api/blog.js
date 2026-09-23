@@ -7,7 +7,8 @@ const ROOT = 'https://tenentegustavo.com.br';
 const MAG = 'https://mag.tenentegustavo.com.br';
 const SUPA_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://xckxgsbbitgbrlkoivgg.supabase.co';
 const SUPA_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
-const DEFAULT_OG = `${ROOT}/blog-og-default.png`;
+// Cartao padrao (rebranding 2026-09): banner do Prof. Tenente Gustavo. Artigo com cartao proprio continua com o dele.
+const DEFAULT_OG = `${ROOT}/og-mag-azul.jpg`;
 
 const supabase = createClient(SUPA_URL, SUPA_KEY || 'anon-key-missing', { auth: { persistSession: false } });
 
@@ -179,11 +180,11 @@ function renderIndex(posts) {
   <meta property="og:description" content="Como estudar e passar nos concursos da PMMG, com método científico do Prof. Tenente Gustavo." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="${ROOT}/blog" />
-  <meta property="og:image" content="${ROOT}/blog/og.png" />
+  <meta property="og:image" content="${ROOT}/og-mag-azul.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="${ROOT}/blog/og.png" />
+  <meta name="twitter:image" content="${ROOT}/og-mag-azul.jpg" />
   <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Blog', name: 'Blog da Mentoria MAG', url: `${ROOT}/blog`, publisher: { '@type': 'Organization', name: 'Mentoria MAG', logo: { '@type': 'ImageObject', url: `${ROOT}/logo-mag.png` } } })}</script>
 </head>
 <body>
