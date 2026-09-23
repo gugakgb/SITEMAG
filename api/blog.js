@@ -2,6 +2,7 @@
 // Rotas (via vercel.json): /blog -> índice ; /blog/<slug> -> artigo.
 import { createClient } from '@supabase/supabase-js';
 import { marked } from 'marked';
+import { CARTOES_BLOG } from './_blog-cards.js';
 
 const ROOT = 'https://tenentegustavo.com.br';
 const MAG = 'https://mag.tenentegustavo.com.br';
@@ -86,7 +87,12 @@ function renderArticle(p) {
   const title = p.title || '';
   const seoTitle = p.seo_title || title;
   const desc = p.seo_description || p.excerpt || '';
-  const og = p.og_image_url || DEFAULT_OG;
+  // Artigos que ja existiam em 23/09/2026 guardam no banco um cartao no estilo antigo
+  // (verde-oliva); para eles usamos o cartao novo com o banner (/blog-cards). O "?v=2"
+  // forca o WhatsApp/Facebook a buscar a imagem de novo.
+  const og = CARTOES_BLOG.has(p.slug)
+    ? `${ROOT}/blog-cards/${p.slug}.jpg?v=2`
+    : (p.og_image_url || DEFAULT_OG);
   const cat = p.category || 'Artigo';
   const mins = readingOf(p);
   const date = fmtDate(p.published_at);
