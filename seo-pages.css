@@ -1,27 +1,32 @@
 /* ===========================================================
    Mentoria MAG — guias & blog
-   Estilo: blog militar moderno, suave e aconchegante
-   Tons quentes (papel/creme), dourado fosco, verde-oliva.
-   Títulos em serifa editorial (Newsreader), sentence case.
+   Rebranding 2026-09 (azul + ouro): fundo Névoa, texto Tinta, acento
+   Azul MAG, ouro só em ação/decisão e sobre azul-noite. Títulos em Teko
+   (caixa-alta), texto em Plus Jakarta Sans. Guia completo da marca:
+   PMAG/docs/MARCA-MAG.md. (Antes: creme + dourado + verde-oliva.)
    =========================================================== */
-@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Teko:wght@500;600&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap");
 
 :root {
-  --paper: #f4eee2;
-  --paper-2: #fbf7ef;
-  --ink: #2b2722;
-  --ink-soft: #574f44;
-  --muted: #837a6c;
-  --gold: #9c7c3c;
-  --gold-2: #b6924a;
-  --gold-soft: rgba(156, 124, 60, 0.12);
-  --gold-line: rgba(156, 124, 60, 0.28);
-  --olive: #3f5436;
-  --olive-2: #4f6a43;
-  --line: rgba(43, 39, 34, 0.10);
-  --soft-shadow: 0 14px 38px rgba(43, 39, 34, 0.07);
-  --serif: "Newsreader", Georgia, "Times New Roman", serif;
-  --sans: "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  /* nomes antigos mantidos; valores da marca nova */
+  --paper: #f2f6fc;            /* Névoa (era creme) */
+  --paper-2: #ffffff;          /* cartões */
+  --ink: #0c1830;              /* Tinta */
+  --ink-soft: #46536b;
+  --muted: #6b7a95;
+  --gold: #1b55d9;             /* acento = Azul MAG (legível como texto) */
+  --gold-2: #2f6bf0;
+  --gold-soft: rgba(27, 85, 217, 0.08);
+  --gold-line: rgba(27, 85, 217, 0.24);
+  --olive: #0a1a40;            /* era verde-oliva: agora Azul Noite */
+  --olive-2: #1b55d9;
+  --ouro: #f2b705;             /* ouro de verdade: ação e conquista */
+  --ouro-2: #ffc61a;
+  --ouro-base: #c99500;
+  --line: rgba(12, 24, 48, 0.10);
+  --soft-shadow: 0 14px 38px rgba(12, 24, 48, 0.07);
+  --serif: "Teko", "Arial Narrow", sans-serif;   /* títulos (nome antigo mantido) */
+  --sans: "Plus Jakarta Sans", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -54,7 +59,7 @@ h1 em, h2 em { color: var(--gold); font-style: italic; }
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgba(244, 238, 226, 0.86);
+  background: rgba(242, 246, 252, 0.86);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
 }
@@ -95,16 +100,16 @@ h1 em, h2 em { color: var(--gold); font-style: italic; }
   isolation: isolate;
   overflow: hidden;
   background:
-    radial-gradient(900px 460px at 88% -10%, rgba(156, 124, 60, 0.14), transparent 62%),
-    radial-gradient(760px 420px at -8% 110%, rgba(63, 84, 54, 0.12), transparent 58%),
-    linear-gradient(180deg, #f7f1e6 0%, var(--paper) 100%);
+    radial-gradient(900px 460px at 88% -10%, rgba(27, 85, 217, 0.14), transparent 62%),
+    radial-gradient(760px 420px at -8% 110%, rgba(10, 26, 64, 0.12), transparent 58%),
+    linear-gradient(180deg, #f7fafe 0%, var(--paper) 100%);
 }
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: radial-gradient(rgba(43, 39, 34, 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(12, 24, 48, 0.05) 1px, transparent 1px);
   background-size: 22px 22px;
   -webkit-mask-image: radial-gradient(ellipse at 75% 10%, #000 20%, transparent 70%);
   mask-image: radial-gradient(ellipse at 75% 10%, #000 20%, transparent 70%);
@@ -172,8 +177,8 @@ h1 {
 .btn:hover { transform: translateY(-2px); }
 .btn-primary {
   background: var(--olive);
-  color: #f6f1e6;
-  box-shadow: 0 12px 26px rgba(63, 84, 54, 0.22);
+  color: #f7fafe;
+  box-shadow: 0 12px 26px rgba(10, 26, 64, 0.22);
 }
 .btn-primary:hover { background: var(--olive-2); }
 .btn-secondary {
@@ -213,7 +218,7 @@ h1 {
 .card:hover {
   transform: translateY(-3px);
   border-color: var(--gold-line);
-  box-shadow: 0 22px 50px rgba(43, 39, 34, 0.10);
+  box-shadow: 0 22px 50px rgba(12, 24, 48, 0.10);
 }
 .card h3 { margin: 0 0 9px; font-size: 21px; font-weight: 600; }
 .card p, .card li { color: var(--ink-soft); }
@@ -222,16 +227,16 @@ h1 {
 .card li { margin-bottom: 5px; }
 
 /* ===== Seção escura (verde-oliva aconchegante) ===== */
-.dark { background: var(--olive); color: #f1ece0; }
-.dark .section-title, .dark h3 { color: #fbf7ef; }
-.dark .section-intro, .dark .card p, .dark .card li { color: rgba(241, 236, 224, 0.82); }
+.dark { background: var(--olive); color: #f7fafe; }
+.dark .section-title, .dark h3 { color: #ffffff; }
+.dark .section-intro, .dark .card p, .dark .card li { color: rgba(247, 250, 254, 0.82); }
 .dark .card {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.12);
   box-shadow: none;
 }
 .dark .card strong { color: var(--gold-2); }
-.dark a { color: #e7d9b0; }
+.dark a { color: #ffc61a; }
 
 /* ===== FAQ ===== */
 .faq { display: grid; gap: 12px; max-width: 820px; }
@@ -261,14 +266,14 @@ h1 {
   border-radius: 22px;
   padding: 46px;
   background:
-    radial-gradient(600px 320px at 100% 0%, rgba(182, 146, 74, 0.18), transparent 60%),
-    linear-gradient(140deg, #3f5436 0%, #2f4129 100%);
-  color: #f3eee2;
+    radial-gradient(600px 320px at 100% 0%, rgba(242, 183, 5, 0.18), transparent 60%),
+    linear-gradient(140deg, #0a1a40 0%, #123072 70%, #1b55d9 130%);
+  color: #f7fafe;
   box-shadow: var(--soft-shadow);
 }
-.cta-band h2 { margin: 0 0 12px; font-size: clamp(24px, 3.4vw, 36px); font-weight: 500; color: #fbf7ef; }
-.cta-band p { max-width: 60ch; color: rgba(243, 238, 226, 0.82); }
-.cta-band .btn-secondary { color: #f3eee2; border-color: rgba(243, 238, 226, 0.35); background: rgba(255, 255, 255, 0.06); }
+.cta-band h2 { margin: 0 0 12px; font-size: clamp(24px, 3.4vw, 36px); font-weight: 500; color: #ffffff; }
+.cta-band p { max-width: 60ch; color: rgba(247, 250, 254, 0.82); }
+.cta-band .btn-secondary { color: #f7fafe; border-color: rgba(247, 250, 254, 0.35); background: rgba(255, 255, 255, 0.06); }
 .cta-band .btn-secondary:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
 
 /* ===== Diversos ===== */
@@ -416,7 +421,7 @@ h1 {
   color: inherit;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
-.post-card:hover { transform: translateY(-3px); border-color: var(--gold-line); box-shadow: 0 22px 50px rgba(43, 39, 34, 0.10); }
+.post-card:hover { transform: translateY(-3px); border-color: var(--gold-line); box-shadow: 0 22px 50px rgba(12, 24, 48, 0.10); }
 .post-card .tag {
   font-size: 12.5px;
   font-weight: 600;
@@ -447,6 +452,62 @@ h1 {
   font-family: var(--sans); font-size: 14.5px; font-weight: 600; cursor: pointer;
   transition: background .18s ease, transform .18s ease;
 }
-.share-btn:hover { background: rgba(156,124,60,0.18); transform: translateY(-1px); }
+.share-btn:hover { background: rgba(27, 85, 217,0.18); transform: translateY(-1px); }
 .share-btn svg { width: 17px; height: 17px; }
 .share-ok { color: var(--olive-2); }
+
+
+/* ===========================================================
+   REBRANDING 2026-09 — ajustes de tipografia e ação
+   =========================================================== */
+/* Teko é condensada: títulos em caixa-alta, peso maior e um pouco maiores */
+h1, h2, h3, h4 { font-weight: 600; text-transform: uppercase; letter-spacing: 0.005em; line-height: 0.98; }
+h1 em, h2 em { font-style: normal; color: var(--gold); }
+.brand { font-family: var(--serif); font-size: 24px; text-transform: uppercase; letter-spacing: 0.02em; line-height: 1; white-space: nowrap; }
+@media (max-width: 640px) {
+  .brand { font-size: 19px; gap: 8px; flex-shrink: 0; }
+  .brand img { width: 32px; height: 32px; }
+  .navlinks { gap: 12px; min-width: 0; }
+  .navlinks a { white-space: nowrap; }
+}
+@media (max-width: 420px) {
+  .nav { width: calc(100% - 28px); gap: 10px; }
+  .brand { font-size: 17px; gap: 7px; }
+  .brand img { width: 28px; height: 28px; }
+  .navlinks { gap: 10px; font-size: 12.5px; scrollbar-width: none; }
+  .navlinks::-webkit-scrollbar { display: none; }
+}
+.prose h2 { font-size: clamp(30px, 3.6vw, 40px); line-height: 1; letter-spacing: 0.005em; }
+.prose h2::after { background: var(--ouro); opacity: 0.9; }
+.prose h3 { font-size: 27px; line-height: 1; }
+.prose > p:first-of-type::first-letter { font-size: 3.9em; line-height: 0.78; color: var(--gold); }
+.prose blockquote, .prose .lead { font-family: var(--sans); }
+.prose blockquote { font-size: 19px; border-left-color: var(--ouro); }
+.post-card h3 { font-size: 26px; }
+.cta-band h2 { font-size: clamp(30px, 4vw, 44px); font-weight: 600; }
+.dark .card strong { color: var(--ouro); }
+
+/* Botão de ação = OURO com texto escuro e degrau 3D (regra da marca: ouro = decisão) */
+.btn-primary {
+  background: linear-gradient(180deg, var(--ouro-2) 0%, var(--ouro) 100%);
+  color: var(--ink);
+  box-shadow: 0 5px 0 var(--ouro-base), 0 14px 30px rgba(242, 183, 5, 0.28);
+}
+.btn-primary:hover { background: linear-gradient(180deg, #ffd13d 0%, var(--ouro-2) 100%); color: var(--ink); }
+
+/* Banner fixo do blog (foto oficial do Prof. Tenente Gustavo) */
+.blog-banner {
+  display: block;
+  width: min(1080px, calc(100% - 40px));
+  margin: 22px auto 0;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #0a1a40;
+  box-shadow: 0 18px 44px rgba(10, 26, 64, 0.22);
+  aspect-ratio: 3 / 1;
+}
+.blog-banner img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+@media (max-width: 640px) {
+  /* no celular o banner aparece inteiro (sem cortar o nome) */
+  .blog-banner { border-radius: 14px; margin-top: 14px; width: calc(100% - 28px); }
+}

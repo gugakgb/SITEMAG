@@ -45,6 +45,12 @@ function normalizeMarkdown(md) {
   return s.trim();
 }
 
+// Banner fixo do blog (rebranding 2026-09): foto oficial do Prof. Tenente Gustavo.
+// Aparece no topo da lista de artigos e de cada artigo. Versao leve no celular.
+const BANNER = `  <a class="blog-banner" href="/" aria-label="Professor Tenente Gustavo — Mentor de concursos da PMMG">
+    <img src="/banner-tenente-gustavo.webp" srcset="/banner-tenente-gustavo-1200.webp 1200w, /banner-tenente-gustavo.webp 2000w" sizes="(max-width: 1100px) 100vw, 1080px" width="2000" height="667" alt="Professor Tenente Gustavo — Mentor de concursos da PMMG: CFO, CHO, Soldados, Sargentos e Polícia Penal" fetchpriority="high" decoding="async" />
+  </a>`;
+
 const NAV = `
   <header class="topbar">
     <nav class="nav" aria-label="Navegação principal">
@@ -108,7 +114,7 @@ function renderArticle(p) {
   <link rel="canonical" href="${url}" />
   <link rel="stylesheet" href="/seo-pages.css" />
   <link rel="icon" type="image/png" href="/logo-mag.png" />
-  <style>.hero-inner{min-height:auto;padding:60px 0 40px}.hero h1{max-width:26ch;font-size:clamp(32px,3.2vw,46px);margin-bottom:14px}.post-meta{margin-top:14px}</style>
+  <style>.hero-inner{min-height:auto;padding:60px 0 40px}.hero h1{max-width:24ch;font-size:clamp(38px,4.4vw,60px);margin-bottom:14px}.post-meta{margin-top:14px}</style>
   <meta property="og:title" content="${esc(title)}" />
   <meta property="og:description" content="${esc(desc)}" />
   <meta property="og:type" content="article" />
@@ -123,6 +129,7 @@ function renderArticle(p) {
 <body>
   <div class="read-progress" id="read-progress"></div>
 ${NAV}
+${BANNER}
   <main>
     <section class="hero">
       <div class="hero-inner">
@@ -181,6 +188,7 @@ function renderIndex(posts) {
 </head>
 <body>
 ${NAV}
+${BANNER}
   <main>
     <section class="hero">
       <div class="hero-inner">
