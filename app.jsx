@@ -5,21 +5,23 @@ const { useEffect, useRef, useState } = React;
 
 // ── Tweak defaults ─────────────────────────────────────────────────────────
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "palette": "dossie",
-  "fonts": "operacional"
+  "palette": "mag",
+  "fonts": "mag"
 } /*EDITMODE-END*/;
 
 const PALETTE_OPTIONS = [
 ["#0a0a0a", "#B8985A", "#5a6a3a", "#efece4"],
 ["#1a1d14", "#c8a96a", "#7e8c4e", "#efebd9"],
 ["#ece4cf", "#8a6a2c", "#3d4a2a", "#1b1a14"],
-["#070707", "#d4b06c", "#6c6238", "#f5efde"]];
+["#070707", "#d4b06c", "#6c6238", "#f5efde"],
+["#0a1a40", "#f2b705", "#1b55d9", "#f7fafe"]];
 
-const PALETTE_KEYS = ["obsidian", "campo", "dossie", "ouro"];
+const PALETTE_KEYS = ["obsidian", "campo", "dossie", "ouro", "mag"];
 const FONT_OPTIONS = [
 { value: "operacional", label: "Operacional" },
 { value: "editorial", label: "Editorial" },
-{ value: "hibrido", label: "Híbrido" }];
+{ value: "hibrido", label: "Híbrido" },
+{ value: "mag", label: "MAG (Teko + Jakarta)" }];
 
 
 // ── Hook: scroll progress (0..1) + scrollY ─────────────────────────────────

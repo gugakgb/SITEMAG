@@ -40,6 +40,17 @@ body[data-palette="ouro"]{
   --gold:#d4b06c; --gold-2:#f1cc83; --olive:#6c6238;
 }
 
+/* Paleta MAG (rebranding 2026-09 — "modo palco", igual ao banner do
+   Prof. Tenente Gustavo): azul-noite, texto claro, destaque em OURO.
+   Guia da marca: PMAG/docs/MARCA-MAG.md. As paletas antigas ficam acima. */
+body[data-palette="mag"]{
+  --bg:#0a1a40; --bg-2:#0e2152; --panel:#10265e;
+  --ink:#f7fafe; --ink-2:rgba(214,226,248,.78); --ink-3:rgba(199,214,245,.52);
+  --line:rgba(199,214,245,.14); --line-strong:rgba(199,214,245,.30);
+  --gold:#f2b705; --gold-2:#ffc61a; --olive:#1b55d9;
+  --btn-ink:#0c1830;
+}
+
 /* ===== TIPOGRAFIA ===== */
 body[data-fonts="operacional"]{
   --f-display:"Oswald","Bebas Neue",system-ui,sans-serif;
@@ -59,6 +70,32 @@ body[data-fonts="hibrido"]{
   --f-mono:"JetBrains Mono",ui-monospace,monospace;
   --display-tracking:.04em; --display-weight:400;
 }
+
+body[data-fonts="mag"]{
+  --f-display:"Teko","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Plus Jakarta Sans",system-ui,sans-serif;
+  --display-tracking:.01em; --display-weight:600;
+}
+/* Teko é mais estreita que a Oswald: títulos um pouco maiores */
+body[data-fonts="mag"] .hero h1{font-size:clamp(58px, 8.6vw, 128px);line-height:.88}
+body[data-fonts="mag"] .mission-code{font-size:76px;line-height:.8}
+body[data-fonts="mag"] .mission-title{font-size:26px;line-height:1.02}
+body[data-fonts="mag"] .mentor-name{font-size:clamp(30px, 4vw, 46px)}
+body[data-fonts="mag"] .hud, body[data-fonts="mag"] .mission-status,
+body[data-fonts="mag"] .mentor-tag{font-variant-numeric:tabular-nums;font-weight:600}
+body[data-palette="mag"] .mission{
+  background:linear-gradient(160deg, rgba(31,79,201,.22), rgba(16,38,94,.55));
+  border-color:var(--line);
+  border-radius:20px;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+}
+body[data-palette="mag"] .mission:hover{border-color:rgba(242,183,5,.45)}
+body[data-palette="mag"] .mission-status{border-radius:999px}
+body[data-palette="mag"] .btn, body[data-palette="mag"] .mentor-photo{border-radius:14px}
+body[data-palette="mag"] .btn-primary{box-shadow:0 4px 0 #c99500}
+body[data-palette="mag"] .hud .brand img{filter:drop-shadow(0 0 8px rgba(242,183,5,.35))}
+body[data-palette="mag"] .bg-scanlines{opacity:.12}
 
 /* ===== RESET ===== */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -330,7 +367,7 @@ body[data-fonts="editorial"] .mentor-name{text-transform:none;letter-spacing:0}
   transition:transform .18s ease, background .18s ease, color .18s ease, box-shadow .18s;
   white-space:nowrap;
 }
-.btn-primary{background:var(--gold);color:#0a0a0a}
+.btn-primary{background:var(--gold);color:var(--btn-ink,#0a0a0a)}
 .btn-primary:hover{background:var(--gold-2);transform:translateY(-1px);
   box-shadow:0 10px 30px -10px color-mix(in oklab, var(--gold) 60%, transparent)}
 .btn-ghost{
