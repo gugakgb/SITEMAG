@@ -47,6 +47,82 @@ function normalizeMarkdown(md) {
   return s.trim();
 }
 
+// ===================================================================
+// LEITURA MELHOR (23/09/2026) — ver PMAG/docs/MARCA-MAG.md
+// ===================================================================
+
+// Texto colado do Word/ChatGPT chega sem Markdown: subtitulos viram paragrafo
+// comum e listas viram "item;\nitem;". Esta funcao reconstroi a estrutura, mas
+// SO age em artigos sem nenhum subtitulo (#). Artigos ja formatados ficam intactos.
+const MARCADOR_MD = /^\s*(#|[-*+] |\d+[.)] |>|\||```)/;
+function estruturarTextoCorrido(md) {
+  if (/^#{1,6}\s/m.test(md)) return md;               // ja tem subtitulos: nao mexe
+  const blocos = md.split(/\n{2,}/);
+  return blocos.map((bloco, i) => {
+    const b = bloco.trim();
+    if (!b || MARCADOR_MD.test(b)) return bloco;
+    const linhas = b.split('\n').map((l) => l.trim()).filter(Boolean);
+    // Lista: 2+ linhas, todas terminando em ";" ou "."
+    if (linhas.length >= 2 && linhas.every((l) => /[;.]$/.test(l) && !MARCADOR_MD.test(l))) {
+      return linhas.map((l) => `- ${l.replace(/[;.]$/, '')}`).join('\n');
+    }
+    // Subtitulo: uma linha curta, sem pontuacao final, comecando com maiuscula
+    if (i > 0 && linhas.length === 1 && b.length <= 90 && !/[.:;!?,]$/.test(b) && /^[A-ZÀ-Þ0-9]/.test(b)) {
+      return `## ${b}`;
+    }
+    // Rotulo: "Competencia 1: texto" -> negrito no rotulo
+    const rot = b.match(/^([A-ZÀ-Þ][\wÀ-ÿ ]{2,30}\s\d+):\s+([\s\S]+)$/);
+    if (rot && linhas.length === 1) return `**${rot[1]}:** ${rot[2]}`;
+    return bloco;
+  }).join('\n\n');
+}
+
+const slugAncora = (t) => String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .toLowerCase().replace(/<[^>]+>/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'secao';
+
+// Depois do Markdown: ancoras nos subtitulos (para o sumario), rotulos e caixas
+// de Atencao/Dica.
+function realcarHtml(html) {
+  const toc = [];
+  const usados = new Set();
+  let out = html.replace(/<h2>([\s\S]*?)<\/h2>/g, (_, inner) => {
+    let id = slugAncora(inner); let n = 2;
+    while (usados.has(id)) id = `${slugAncora(inner)}-${n++}`;
+    usados.add(id);
+    toc.push({ id, text: inner.replace(/<[^>]+>/g, '') });
+    return `<h2 id="${id}">${inner}</h2>`;
+  });
+  // "Competencia 1:" em negrito no inicio do paragrafo -> cartao de rotulo
+  out = out.replace(/<p><strong>([^<]{3,40}?\d+):<\/strong>/g, '<p class="rotulo"><strong>$1:</strong>');
+  // Caixas: citacao (ou paragrafo) que comeca com "Atencao:" / "Dica:" / "Importante:"
+  const caixa = (tipo, rotulo, resto) => {
+    const cls = /dica/i.test(tipo) ? 'dica' : 'atencao';
+    const icone = cls === 'dica' ? '✓' : '!';
+    return `<div class="callout ${cls}"><span class="ci" aria-hidden="true">${icone}</span><div><b>${rotulo}</b><p>${resto}</p></div></div>`;
+  };
+  out = out.replace(/<blockquote>\s*<p>(?:<strong>)?(Aten[çc][ãa]o|Dica|Importante)\s*:?\s*(?:<\/strong>)?\s*:?\s*([\s\S]*?)<\/p>\s*<\/blockquote>/gi,
+    (_, tipo, resto) => caixa(tipo, tipo, resto));
+  out = out.replace(/<p>(?:<strong>)?(Aten[çc][ãa]o|Dica|Importante):(?:<\/strong>)?\s*([\s\S]*?)<\/p>/g,
+    (_, tipo, resto) => caixa(tipo, tipo, resto));
+  return { html: out, toc };
+}
+
+// Chamada para a plataforma no meio do artigo (antes do 3o subtitulo).
+const CTA_MEIO = `<aside class="cta-meio" aria-label="Treine na plataforma">
+      <span class="k">Treino na plataforma</span>
+      <b>Leu? Agora transforme em acerto de prova.</b>
+      <p>Na Mentoria MAG você treina com trilha guiada, flashcards e simulados no formato da banca da PMMG.</p>
+      <a class="btn-ouro" href="${MAG}/auth">Começar grátis</a>
+    </aside>`;
+function inserirCtaMeio(html, toc) {
+  if (toc.length < 4) return html;                    // artigo curto: fica so a chamada do fim
+  const alvo = `<h2 id="${toc[2].id}">`;
+  return html.replace(alvo, `${CTA_MEIO}\n${alvo}`);
+}
+
+// Sumario: marca o topico que esta na tela; no celular comeca fechado.
+const TOC_SCRIPT = `<script>(function(){var t=document.querySelector('.post-toc');if(!t)return;if(window.innerWidth<1000)t.removeAttribute('open');var ls=[].slice.call(t.querySelectorAll('a'));var hs=ls.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});function u(){var y=window.scrollY+140,at=0;hs.forEach(function(h,i){if(h&&h.offsetTop<=y)at=i;});ls.forEach(function(a,i){a.classList.toggle('ativo',i===at);});}window.addEventListener('scroll',u,{passive:true});u();})();</script>`;
+
 // Banner fixo do blog (rebranding 2026-09): foto oficial do Prof. Tenente Gustavo.
 // Aparece no topo da lista de artigos e de cada artigo. Versao leve no celular.
 const BANNER = `  <a class="blog-banner" href="/" aria-label="Professor Tenente Gustavo — Mentor de concursos da PMMG">
@@ -96,7 +172,14 @@ function renderArticle(p) {
   const cat = p.category || 'Artigo';
   const mins = readingOf(p);
   const date = fmtDate(p.published_at);
-  const bodyHtml = marked.parse(normalizeMarkdown(p.content_md), { mangle: false, headerIds: false });
+  const md = estruturarTextoCorrido(normalizeMarkdown(p.content_md));
+  const realce = realcarHtml(marked.parse(md, { mangle: false, headerIds: false }));
+  const toc = realce.toc;
+  const bodyHtml = inserirCtaMeio(realce.html, toc);
+  const resumoHtml = p.excerpt ? `<div class="resumo"><span class="k">Em 30 segundos</span><p>${esc(p.excerpt)}</p></div>` : '';
+  const tocHtml = toc.length >= 3
+    ? `<details class="post-toc" open><summary>Neste artigo <span>${toc.length} tópicos</span></summary><ol>${toc.map((t) => `<li><a href="#${t.id}">${esc(t.text)}</a></li>`).join('')}</ol></details>`
+    : '';
   const ld = {
     '@context': 'https://schema.org',
     '@type': p.schema_type === 'NewsArticle' ? 'NewsArticle' : 'BlogPosting',
@@ -149,14 +232,19 @@ ${BANNER}
         </div>
       </div>
     </section>
-    <article class="prose">
+    <div class="post-layout${tocHtml ? ' com-toc' : ''}">
+${tocHtml}
+      <article class="prose">
+${resumoHtml}
 ${bodyHtml}
-    </article>
+      </article>
+    </div>
 ${CTA}
   </main>
 ${FOOTER}
 ${SHARE_SCRIPT}
 ${PROGRESS_SCRIPT}
+${TOC_SCRIPT}
   <script>(function(){try{var K='mag_vid',v=localStorage.getItem(K);if(!v){v=(window.crypto&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(36).slice(2));localStorage.setItem(K,v);}fetch('${SUPA_URL}/rest/v1/blog_views',{method:'POST',headers:{apikey:'${SUPA_KEY}',Authorization:'Bearer ${SUPA_KEY}','Content-Type':'application/json',Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify({post_slug:'${p.slug}',visitor_id:v})}).catch(function(){});}catch(e){}})();</script>
 </body>
 </html>`;
