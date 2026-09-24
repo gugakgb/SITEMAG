@@ -601,7 +601,7 @@ function MentorStrip() {
         <div className="mentor-photo">
           <span className="corner tl" />
           <span className="corner br" />
-          <img src="https://tenentegustavo.com.br/foto-gustavo.png" alt="Tenente Gustavo" />
+          <img src="/foto-gustavo-mentor.webp" alt="Prof. Tenente Gustavo" width="480" height="480" loading="lazy" />
         </div>
         <div className="mentor-info">
           <div className="mentor-tag">Mentor · Comando MAG</div>
