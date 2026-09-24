@@ -235,13 +235,12 @@ function Hud({ scrollRef }) {
         <span className="sep hide-sm">/</span>
         <span className="hide-sm">Arsenal · PMMG</span>
       </div>
-      <div className="hud-r">
-        <span className="hide-sm">FR <b style={{ color: "var(--gold)" }}>{String(tick.frame).padStart(4, "0")}</b></span>
-        <span className="sep hide-sm">/</span>
-        <span>SIT: <span className="tick">OPERACIONAL</span></span>
-        <span className="sep hide-sm">/</span>
-        <span className="hide-sm" style={{ fontVariantNumeric: "tabular-nums" }}>{tick.time}</span>
-      </div>
+      {/* Menu sempre visivel (inclusive no celular): o Blog nunca fica escondido. */}
+      <nav className="hud-nav" aria-label="Navegação principal">
+        <a href="#posto">Cursos</a>
+        <a href="/blog" className="hud-blog">Blog</a>
+        <a href="https://mag.tenentegustavo.com.br/auth" className="hud-entrar">Entrar</a>
+      </nav>
     </header>);
 
 }
@@ -250,34 +249,119 @@ function fmtTime(d) {
   return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())} UTC-3`;
 }
 
-// ── HERO (cursos como protagonista) ────────────────────────────────────────
+// ── HERO "QUAL É O SEU PRÓXIMO POSTO?" (variação B, aprovada em 23/09/2026) ─
 function Hero() {
   return (
-    <section className="hero page">
-      <div className="hero-head">
-        <div>
-          <div className="eyebrow fade-up d1">Missões · 04 Frentes Ativas · PMMG</div>
-          <h1 className="fade-up d2">
-            Selecione<br />
-            sua <em style={{ padding: "0px 18px 0px 0px" }}>missão.</em>
-          </h1>
+    <section className="hero-b page">
+      <div className="hb-texto">
+        <div className="eyebrow fade-up d1">Preparação PMMG · CFO · CFSD · CFS · CHO</div>
+        <h1 className="fade-up d2">Qual é o seu <em>próximo posto?</em></h1>
+        <p className="hb-sub fade-up d3">
+          Do civil ao oficial: cada degrau da carreira na Polícia Militar de Minas Gerais
+          tem um caminho. Diga onde você está e a gente mostra o seu.
+        </p>
+        <div className="hb-acts fade-up d4">
+          <a className="btn btn-primary" href="#posto">Descobrir meu caminho <span className="arrow">↓</span></a>
+          <a className="btn btn-ghost" href="/blog">Ler o blog <span className="arrow">→</span></a>
         </div>
-        <div className="hero-aside">
-          <p className="hero-lead fade-up d3">
-            Quatro operações de preparação para a Polícia Militar de Minas Gerais —
-            CFO, CFSD, CFS e CHO. Doutrina, método e comando, sob a Mentoria MAG.
-          </p>
-          <div className="hero-coords fade-up d4">
-            <span>LAT <b>−19.9167</b></span>
-            <span>LON <b>−43.9345</b></span>
-            <span>OP <b>MAG·26</b></span>
-          </div>
+      </div>
+      <div className="hb-foto fade-up d3">
+        <img src="/foto-gustavo-retrato.webp" alt="Prof. Tenente Gustavo, mentor da Mentoria MAG" width="720" height="1279" fetchpriority="high" />
+        <div className="hb-selo">
+          <i>Mentor</i>
+          <b>Prof. Tenente Gustavo</b>
+          <span>Oficial da PMMG · Neurocientista · Direito Militar</span>
+        </div>
+      </div>
+    </section>);
+}
+
+// Situação do visitante -> curso principal, cursos que também servem, degrau alvo
+// e degraus já vencidos. "tambem" aceita siglas de missões e de cursos avulsos.
+const PERFIS = [
+{ id: "civil", label: "Sou civil", sub: "ensino superior", principal: "CFSD", tambem: ["CRS"], alvo: 1, passou: [] },
+{ id: "bacharel", label: "Sou bacharel", sub: "em Direito", principal: "CFO", tambem: ["CFSD", "CRS"], alvo: 3, passou: [] },
+{ id: "praca", label: "Sou Cabo ou Soldado", sub: "PMMG", principal: "CFS", tambem: ["EAP"], alvo: 2, passou: [1] },
+{ id: "sgt", label: "Sou Sargento ou Subtenente", sub: "PMMG", principal: "CHO", tambem: [], alvo: 3, passou: [1, 2] }];
+
+const DEGRAUS = [
+{ n: 3, nome: "Oficial", sub: "Tenente → carreira de comando" },
+{ n: 2, nome: "Sargento", sub: "graduação de liderança" },
+{ n: 1, nome: "Soldado", sub: "porta de entrada na PMMG" }];
+
+function Posto({ extras }) {
+  const [perfilId, setPerfilId] = useState("civil");
+  const perfil = PERFIS.find((p) => p.id === perfilId) || PERFIS[0];
+  const principal = MISSIONS.find((m) => m.code === perfil.principal);
+  const outras = MISSIONS.filter((m) => m.code !== perfil.principal);
+  // cursos avulsos (do painel) que combinam com o perfil, pela sigla do card
+  const extrasDoPerfil = extras.filter((c) =>
+  perfil.tambem.includes(String(cardCode(c)).toUpperCase().split(/\s+/)[0])
+  );
+
+  return (
+    <section className="posto page" id="posto">
+      <div className="posto-head">
+        <div className="eyebrow">Passo 1</div>
+        <h2>Onde você está hoje?</h2>
+        <div className="chips" role="group" aria-label="Sua situação hoje">
+          {PERFIS.map((p) =>
+          <button key={p.id} type="button" className="chip" aria-pressed={p.id === perfilId}
+          onClick={() => setPerfilId(p.id)}>
+              {p.label} <small>{p.sub}</small>
+            </button>
+          )}
         </div>
       </div>
 
-      <Missions />
-    </section>);
+      <div className="escada">
+        <div className="trilho" aria-label="Carreira na PMMG">
+          {DEGRAUS.map((d) =>
+          <div key={d.n} data-degrau={d.n}
+          className={`degrau${d.n === perfil.alvo ? " ativo" : ""}${perfil.passou.includes(d.n) ? " passou" : ""}`}>
+              <span className="n">{d.n}</span>
+              <div><b>{d.nome}</b><span>{d.sub}</span></div>
+            </div>
+          )}
+        </div>
 
+        <div className="pcursos">
+          {principal &&
+          <div className="pcurso destaque" key={principal.code}>
+              <span className="tag">{principal.statusLabel}</span>
+              <span className="cod">{principal.code}</span>
+              <div className="corpo">
+                <h3>{principal.title}</h3>
+                <p>{principal.brief}</p>
+                <span className="pre">Para <b>{principal.level}</b> · Duração <b>{principal.duration}</b> · Vagas <b>limitadas</b></span>
+                {extrasDoPerfil.length > 0 &&
+              <span className="tambem">Também para você:{" "}
+                    {extrasDoPerfil.map((c) =>
+                <a key={c.slug} href={`https://mag.tenentegustavo.com.br/${c.slug}`} target="_blank" rel="noopener">{c.product_name} →</a>
+                )}
+                  </span>
+              }
+              </div>
+              <a className="btn btn-primary ir" href={principal.href} target="_blank" rel="noopener">
+                Iniciar briefing <span className="arrow">→</span>
+              </a>
+            </div>
+          }
+          {outras.map((m) =>
+          <a key={m.code} href={m.href} target="_blank" rel="noopener"
+          className={`pcurso${perfil.tambem.includes(m.code) ? " ok" : ""}`}>
+              <span className="tag">{m.statusLabel}</span>
+              <span className="cod">{m.code}</span>
+              <div className="corpo">
+                <h3>{m.title}</h3>
+                <p>{m.brief}</p>
+                <span className="pre">Para <b>{m.level}</b></span>
+              </div>
+            </a>
+          )}
+        </div>
+      </div>
+    </section>);
 }
 
 // ── MISSÕES ────────────────────────────────────────────────────────────────
@@ -392,7 +476,7 @@ function cardCode(c) {
   return mined || short || "Curso";
 }
 
-function ExtraCourses() {
+function useExtraCourses() {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -414,6 +498,10 @@ function ExtraCourses() {
     catch(() => {});
   }, []);
 
+  return courses;
+}
+
+function ExtraCourses({ courses }) {
   if (!courses.length) return null;
 
   return (
@@ -460,6 +548,49 @@ function ExtraCourses() {
       </div>
     </section>);
 
+}
+
+// ── DO BLOG (3 artigos mais recentes, puxados do painel) ──────────────────
+function BlogRecente() {
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    const url = `${MAG_SUPABASE_URL}/rest/v1/blog_posts` +
+    `?select=slug,title,category,excerpt,reading_minutes,published_at` +
+    `&status=eq.published&order=published_at.desc&limit=3`;
+    fetch(url, { headers: { apikey: MAG_SUPABASE_ANON, Authorization: `Bearer ${MAG_SUPABASE_ANON}` } }).
+    then((r) => r.ok ? r.json() : []).
+    then((rows) => setPosts(Array.isArray(rows) ? rows : [])).
+    catch(() => {});
+  }, []);
+
+  return (
+    <section className="page blogb" id="blog">
+      <div className="blogb-head">
+        <div>
+          <div className="eyebrow">Do blog</div>
+          <h2>Estudo, edital e estratégia</h2>
+        </div>
+        <a className="btn btn-ghost" href="/blog">Ver todos os artigos <span className="arrow">→</span></a>
+      </div>
+      <div className="blogb-grid">
+        {posts.length === 0 &&
+        <a className="blogb-card" href="/blog">
+            <span className="cat">Blog</span>
+            <h3>Artigos sobre concursos da PMMG</h3>
+            <p>Método de estudo, análise de editais e neurociência da aprendizagem.</p>
+            <span className="mais">Ler o blog →</span>
+          </a>
+        }
+        {posts.map((p) =>
+        <a key={p.slug} className="blogb-card" href={`/blog/${p.slug}`}>
+            <span className="cat">{p.category || "Artigo"}{p.reading_minutes ? ` · ${p.reading_minutes} min de leitura` : ""}</span>
+            <h3>{p.title}</h3>
+            {p.excerpt && <p>{p.excerpt}</p>}
+            <span className="mais">Ler artigo →</span>
+          </a>
+        )}
+      </div>
+    </section>);
 }
 
 // ── MENTOR STRIP ───────────────────────────────────────────────────────────
@@ -528,6 +659,7 @@ function Footer() {
 function App() {
   const t = TWEAK_DEFAULTS;
   const scrollRef = useScrollProgress();
+  const extras = useExtraCourses();
 
   useEffect(() => {
     document.body.dataset.palette = t.palette;
@@ -540,7 +672,9 @@ function App() {
       <Hud scrollRef={scrollRef} />
       <main>
         <Hero />
-        <ExtraCourses />
+        <Posto extras={extras} />
+        <ExtraCourses courses={extras} />
+        <BlogRecente />
         <MentorStrip />
       </main>
       <Footer />
