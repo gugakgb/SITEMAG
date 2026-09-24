@@ -258,7 +258,7 @@ function Hero() {
         <h1 className="fade-up d2">Qual é o seu <em>próximo posto?</em></h1>
         <p className="hb-sub fade-up d3">
           Do civil ao oficial: cada degrau da carreira na Polícia Militar de Minas Gerais
-          tem um caminho. Diga onde você está e a gente mostra o seu.
+          tem um caminho. Diga onde você quer chegar e a gente mostra o seu.
         </p>
         <div className="hb-acts fade-up d4">
           <a className="btn btn-primary" href="#posto">Descobrir meu caminho <span className="arrow">↓</span></a>
@@ -270,19 +270,20 @@ function Hero() {
         <div className="hb-selo">
           <i>Professor</i>
           <b>Tenente Gustavo</b>
-          <span>Mentor da Mentoria MAG · Oficial da PMMG · Neurocientista</span>
+          <span>Mentor da Mentoria MAG · Neurocientista</span>
         </div>
       </div>
     </section>);
 }
 
-// Situação do visitante -> curso principal, cursos que também servem, degrau alvo
-// e degraus já vencidos. "tambem" aceita siglas de missões e de cursos avulsos.
+// Objetivo do visitante -> curso principal, cursos que também servem, degrau alvo
+// e degraus já vencidos. "tambem" aceita siglas de missões e de cursos avulsos
+// (curso avulso desativado no painel some sozinho — ver useExtraCourses).
 const PERFIS = [
-{ id: "civil", label: "Sou civil", sub: "ensino superior", principal: "CFSD", tambem: ["CRS"], alvo: 1, passou: [] },
-{ id: "bacharel", label: "Sou bacharel", sub: "em Direito", principal: "CFO", tambem: ["CFSD", "CRS"], alvo: 3, passou: [] },
-{ id: "praca", label: "Sou Cabo ou Soldado", sub: "PMMG", principal: "CFS", tambem: ["EAP"], alvo: 2, passou: [1] },
-{ id: "sgt", label: "Sou Sargento ou Subtenente", sub: "PMMG", principal: "CHO", tambem: [], alvo: 3, passou: [1, 2] }];
+{ id: "soldado", label: "Quero ser Soldado", sub: "CFSd", principal: "CFSD", tambem: ["CRS"], alvo: 1, passou: [] },
+{ id: "cadete", label: "Quero ser Cadete", sub: "CFO", principal: "CFO", tambem: [], alvo: 3, passou: [] },
+{ id: "aluno-oficial", label: "Quero ser Aluno Oficial", sub: "CHO", principal: "CHO", tambem: [], alvo: 3, passou: [1, 2] },
+{ id: "sargento", label: "Quero ser Sargento", sub: "CFS", principal: "CFS", tambem: ["EAP"], alvo: 2, passou: [1] }];
 
 const DEGRAUS = [
 { n: 3, nome: "Oficial", sub: "Tenente → carreira de comando" },
@@ -290,7 +291,7 @@ const DEGRAUS = [
 { n: 1, nome: "Soldado", sub: "porta de entrada na PMMG" }];
 
 function Posto({ extras }) {
-  const [perfilId, setPerfilId] = useState("civil");
+  const [perfilId, setPerfilId] = useState("soldado");
   const perfil = PERFIS.find((p) => p.id === perfilId) || PERFIS[0];
   const principal = MISSIONS.find((m) => m.code === perfil.principal);
   const outras = MISSIONS.filter((m) => m.code !== perfil.principal);
@@ -303,8 +304,8 @@ function Posto({ extras }) {
     <section className="posto page" id="posto">
       <div className="posto-head">
         <div className="eyebrow">Passo 1</div>
-        <h2>Onde você está hoje?</h2>
-        <div className="chips" role="group" aria-label="Sua situação hoje">
+        <h2>Onde você quer chegar?</h2>
+        <div className="chips" role="group" aria-label="Seu objetivo">
           {PERFIS.map((p) =>
           <button key={p.id} type="button" className="chip" aria-pressed={p.id === perfilId}
           onClick={() => setPerfilId(p.id)}>
@@ -371,7 +372,7 @@ const MISSIONS = [
   title: "Curso de Formação de Oficiais",
   status: "ativo",
   statusLabel: "Ativo · Recrutando",
-  brief: "Preparação estratégica completa para quem almeja a carreira ser Oficial da PMMG.",
+  brief: "Preparação estratégica completa para quem almeja a carreira de Oficial da PMMG.",
   duration: "ATÉ A APROVAÇÃO",
   next: "Em aberto",
   level: "Bacharel em Direito",
@@ -480,22 +481,27 @@ function useExtraCourses() {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    const url = `${MAG_SUPABASE_URL}/rest/v1/landing_campaigns` +
-    `?select=slug,product_name,display_short,card_code,category,hero_subtitle,hero_eyebrow` +
-    `&active=eq.true&order=product_name.asc`;
-    fetch(url, {
-      headers: {
-        apikey: MAG_SUPABASE_ANON,
-        Authorization: `Bearer ${MAG_SUPABASE_ANON}`
-      }
-    }).
-    then((r) => r.ok ? r.json() : []).
-    then((rows) => setCourses(
-      (Array.isArray(rows) ? rows : []).filter(
-        (c) => c.slug && !MISSION_SLUGS.includes(String(c.slug).toLowerCase())
-      )
-    )).
-    catch(() => {});
+    const headers = {
+      apikey: MAG_SUPABASE_ANON,
+      Authorization: `Bearer ${MAG_SUPABASE_ANON}`
+    };
+    const getJson = (path) =>
+    fetch(`${MAG_SUPABASE_URL}/rest/v1/${path}`, { headers }).
+    then((r) => r.ok ? r.json() : null).
+    catch(() => null);
+    Promise.all([
+    getJson("landing_campaigns?select=slug,product_name,display_short,card_code,category,hero_subtitle,hero_eyebrow,paid_plan_id,free_plan_id&active=eq.true&order=product_name.asc"),
+    getJson("plans?select=id&active=eq.true")]
+    ).then(([rows, plans]) => {
+      // Curso avulso só aparece se o plano dele (pago ou grátis) estiver ativo.
+      // Desativou o plano no painel (ex.: EAP), o card some — mesmo que a
+      // campanha tenha ficado ligada. Se a lista de planos falhar, mostra tudo.
+      const ativos = Array.isArray(plans) ? new Set(plans.map((p) => p.id)) : null;
+      setCourses((Array.isArray(rows) ? rows : []).filter((c) =>
+      c.slug && !MISSION_SLUGS.includes(String(c.slug).toLowerCase()) && (
+      !ativos || ativos.has(c.paid_plan_id) || ativos.has(c.free_plan_id))
+      ));
+    });
   }, []);
 
   return courses;
@@ -610,8 +616,7 @@ function MentorStrip() {
           <div className="mentor-tag">Mentor · Mentoria MAG</div>
           <div className="mentor-name"><small className="mentor-prof">Professor</small>Tenente Gustavo</div>
           <div className="mentor-creds">
-            <span className="cred">Oficial PMMG</span>
-            <span className="cred">Neurocientista</span>
+                        <span className="cred">Neurocientista</span>
             <span className="cred">Direito Militar</span>
           </div>
         </div>
