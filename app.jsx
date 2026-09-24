@@ -266,11 +266,11 @@ function Hero() {
         </div>
       </div>
       <div className="hb-foto fade-up d3">
-        <img src="/foto-gustavo-retrato.webp" alt="Prof. Tenente Gustavo, mentor da Mentoria MAG" width="720" height="1279" fetchpriority="high" />
+        <img src="/foto-gustavo-retrato.webp" alt="Professor Tenente Gustavo, mentor da Mentoria MAG" width="720" height="1279" fetchpriority="high" />
         <div className="hb-selo">
-          <i>Mentor</i>
-          <b>Prof. Tenente Gustavo</b>
-          <span>Oficial da PMMG · Neurocientista · Direito Militar</span>
+          <i>Professor</i>
+          <b>Tenente Gustavo</b>
+          <span>Mentor da Mentoria MAG · Oficial da PMMG · Neurocientista</span>
         </div>
       </div>
     </section>);
@@ -551,6 +551,9 @@ function ExtraCourses({ courses }) {
 }
 
 // ── DO BLOG (3 artigos mais recentes, puxados do painel) ──────────────────
+// Regra institucional: "Tenente Gustavo" solto vira "Professor Tenente Gustavo".
+const comProfessor = (t) => String(t || "").replace(/(?<!Prof\.\s?|Professor\s)\b(Ten\.|Tenente)\s+Gustavo/g, "Professor Tenente Gustavo");
+
 function BlogRecente() {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
@@ -584,8 +587,8 @@ function BlogRecente() {
         {posts.map((p) =>
         <a key={p.slug} className="blogb-card" href={`/blog/${p.slug}`}>
             <span className="cat">{p.category || "Artigo"}{p.reading_minutes ? ` · ${p.reading_minutes} min de leitura` : ""}</span>
-            <h3>{p.title}</h3>
-            {p.excerpt && <p>{p.excerpt}</p>}
+            <h3>{comProfessor(p.title)}</h3>
+            {p.excerpt && <p>{comProfessor(p.excerpt)}</p>}
             <span className="mais">Ler artigo →</span>
           </a>
         )}
@@ -601,11 +604,11 @@ function MentorStrip() {
         <div className="mentor-photo">
           <span className="corner tl" />
           <span className="corner br" />
-          <img src="/foto-gustavo-mentor.webp" alt="Prof. Tenente Gustavo" width="480" height="480" loading="lazy" />
+          <img src="/foto-gustavo-mentor.webp" alt="Professor Tenente Gustavo" width="480" height="480" loading="lazy" />
         </div>
         <div className="mentor-info">
-          <div className="mentor-tag">Mentor · Comando MAG</div>
-          <div className="mentor-name">Tenente Gustavo</div>
+          <div className="mentor-tag">Mentor · Mentoria MAG</div>
+          <div className="mentor-name"><small className="mentor-prof">Professor</small>Tenente Gustavo</div>
           <div className="mentor-creds">
             <span className="cred">Oficial PMMG</span>
             <span className="cred">Neurocientista</span>
@@ -647,7 +650,7 @@ function Footer() {
     <footer className="page foot">
       <div className="foot-brand">
         <img src="https://tenentegustavo.com.br/logo-mag.png" alt="" />
-        <span>© 2026 · Mentoria MAG · Ten. Gustavo</span>
+        <span>© 2026 · Mentoria MAG · Professor Tenente Gustavo</span>
       </div>
       <div><a href="/blog" style={{ color: "var(--gold)" }}>Blog</a> · PMMG · CFO · CFSD · CFS · CHO</div>
       <div>v.2.0 · Arsenal Operacional</div>

@@ -25,6 +25,19 @@ const fmtDate = (iso) => {
   return `${d.getUTCDate()} de ${MESES[d.getUTCMonth()]} de ${d.getUTCFullYear()}`;
 };
 
+// Regra institucional (23/09/2026): o nome sempre com "Professor" na frente.
+// Vale também para artigos antigos que gravaram só "Tenente Gustavo" no banco.
+const nomeDoAutor = (n) => {
+  const nome = String(n || '').trim() || 'Tenente Gustavo';
+  return /^(prof\.?|professor)\s/i.test(nome) ? nome.replace(/^prof\.?\s/i, 'Professor ')
+    : /^(ten\.?|tenente)\s+gustavo/i.test(nome) ? `Professor ${nome.replace(/^ten\.?\s/i, 'Tenente ')}` : nome;
+};
+
+// Mesmo cuidado dentro dos textos escritos no painel (título, descrição, resumo e
+// corpo): "Tenente Gustavo" solto vira "Professor Tenente Gustavo". Não mexe onde
+// já existe "Prof." ou "Professor" antes.
+const comProfessor = (t) => String(t || '').replace(/(?<!Prof\.\s?|Professor\s)\b(Ten\.|Tenente)\s+Gustavo/g, 'Professor Tenente Gustavo');
+
 const readingOf = (p) => p.reading_minutes || Math.max(1, Math.round((p.content_md || '').trim().split(/\s+/).filter(Boolean).length / 200));
 
 // Alguns artigos antigos foram salvos com as quebras de linha REMOVIDAS (um bug no
@@ -156,13 +169,13 @@ const CTA = `
       </div>
     </section>`;
 
-const FOOTER = `<footer class="footer"><div class="shell"><p>© 2026 Mentoria MAG · Tenente Gustavo. Conteúdo informativo e independente sobre concursos da PMMG.</p></div></footer>`;
+const FOOTER = `<footer class="footer"><div class="shell"><p>© 2026 Mentoria MAG · Professor Tenente Gustavo. Conteúdo informativo e independente sobre concursos da PMMG.</p></div></footer>`;
 
 function renderArticle(p) {
   const url = `${ROOT}/blog/${p.slug}`;
-  const title = p.title || '';
-  const seoTitle = p.seo_title || title;
-  const desc = p.seo_description || p.excerpt || '';
+  const title = comProfessor(p.title || '');
+  const seoTitle = comProfessor(p.seo_title) || title;
+  const desc = comProfessor(p.seo_description || p.excerpt || '');
   // Artigos que ja existiam em 23/09/2026 guardam no banco um cartao no estilo antigo
   // (verde-oliva); para eles usamos o cartao novo com o banner (/blog-cards). O "?v=2"
   // forca o WhatsApp/Facebook a buscar a imagem de novo.
@@ -172,11 +185,11 @@ function renderArticle(p) {
   const cat = p.category || 'Artigo';
   const mins = readingOf(p);
   const date = fmtDate(p.published_at);
-  const md = estruturarTextoCorrido(normalizeMarkdown(p.content_md));
+  const md = comProfessor(estruturarTextoCorrido(normalizeMarkdown(p.content_md)));
   const realce = realcarHtml(marked.parse(md, { mangle: false, headerIds: false }));
   const toc = realce.toc;
   const bodyHtml = inserirCtaMeio(realce.html, toc);
-  const resumoHtml = p.excerpt ? `<div class="resumo"><span class="k">Em 30 segundos</span><p>${esc(p.excerpt)}</p></div>` : '';
+  const resumoHtml = p.excerpt ? `<div class="resumo"><span class="k">Em 30 segundos</span><p>${esc(comProfessor(p.excerpt))}</p></div>` : '';
   const tocHtml = toc.length >= 3
     ? `<details class="post-toc" open><summary>Neste artigo <span>${toc.length} tópicos</span></summary><ol>${toc.map((t) => `<li><a href="#${t.id}">${esc(t.text)}</a></li>`).join('')}</ol></details>`
     : '';
@@ -185,7 +198,7 @@ function renderArticle(p) {
     '@type': p.schema_type === 'NewsArticle' ? 'NewsArticle' : 'BlogPosting',
     headline: title,
     description: desc,
-    author: { '@type': 'Person', name: p.author_name || 'Tenente Gustavo' },
+    author: { '@type': 'Person', name: nomeDoAutor(p.author_name) },
     publisher: { '@type': 'Organization', name: 'Mentoria MAG', logo: { '@type': 'ImageObject', url: `${ROOT}/logo-mag.png` } },
     datePublished: (p.published_at || '').slice(0, 10),
     dateModified: (p.updated_at || p.published_at || '').slice(0, 10),
@@ -227,7 +240,7 @@ ${BANNER}
           <span class="kicker">${esc(cat)}</span>
           <h1>${esc(title)}</h1>
           <div class="breadcrumbs"><a href="/">Mentoria MAG</a> / <a href="/blog">Blog</a> / ${esc(cat)}</div>
-          <div class="post-meta">Por ${esc(p.author_name || 'Tenente Gustavo')} <span class="dot"></span> ${esc(date)} <span class="dot"></span> ${mins} min de leitura</div>
+          <div class="post-meta">Por ${esc(nomeDoAutor(p.author_name))} <span class="dot"></span> ${esc(date)} <span class="dot"></span> ${mins} min de leitura</div>
           <div class="share-row"><button class="share-btn" type="button" onclick="magShare(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>Compartilhar</button></div>
         </div>
       </div>
@@ -254,8 +267,8 @@ function renderIndex(posts) {
   const cards = posts.map((p) => `
           <a class="post-card" href="/blog/${esc(p.slug)}">
             <span class="tag">${esc(p.category || 'Artigo')}</span>
-            <h3>${esc(p.title)}</h3>
-            <p>${esc(p.excerpt || '')}</p>
+            <h3>${esc(comProfessor(p.title))}</h3>
+            <p>${esc(comProfessor(p.excerpt || ''))}</p>
             <span class="more">Ler artigo →</span>
           </a>`).join('\n');
   const empty = `<p class="section-intro">Em breve, novos artigos por aqui.</p>`;
@@ -264,7 +277,7 @@ function renderIndex(posts) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog da Mentoria MAG | Estudos e Concursos da PMMG (Tenente Gustavo)</title>
+  <title>Blog da Mentoria MAG | Estudos e Concursos da PMMG (Professor Tenente Gustavo)</title>
   <meta name="description" content="Artigos sobre como estudar e passar nos concursos da PMMG — Soldado, Sargento, Oficial e CHO — com método científico, pelo Prof. Tenente Gustavo." />
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="${ROOT}/blog" />

@@ -539,3 +539,8 @@ body[data-fonts="editorial"] .mentor-name{text-transform:none;letter-spacing:0}
   .hud-nav{gap:2px}
   .hud-nav a{padding:6px 9px;font-size:12px}
 }
+
+/* "PROFESSOR" acima do nome, como no banner (regra institucional, 23/09/2026) */
+.mentor-name .mentor-prof{display:block;font-family:var(--f-body);font-size:12px;font-weight:800;
+  letter-spacing:.42em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px}
+.hb-selo i{letter-spacing:.32em}
