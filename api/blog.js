@@ -8,7 +8,7 @@ const ROOT = 'https://tenentegustavo.com.br';
 const MAG = 'https://mag.tenentegustavo.com.br';
 const SUPA_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://xckxgsbbitgbrlkoivgg.supabase.co';
 const SUPA_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
-// Cartao padrao (rebranding 2026-09): banner do Prof. Tenente Gustavo. Artigo com cartao proprio continua com o dele.
+// Cartao padrao (rebranding 2026-09): banner do Professor Tenente Gustavo. Artigo com cartao proprio continua com o dele.
 const DEFAULT_OG = `${ROOT}/og-mag-azul.jpg`;
 
 const supabase = createClient(SUPA_URL, SUPA_KEY || 'anon-key-missing', { auth: { persistSession: false } });
@@ -136,7 +136,7 @@ function inserirCtaMeio(html, toc) {
 // Sumario: marca o topico que esta na tela; no celular comeca fechado.
 const TOC_SCRIPT = `<script>(function(){var t=document.querySelector('.post-toc');if(!t)return;if(window.innerWidth<1000)t.removeAttribute('open');var ls=[].slice.call(t.querySelectorAll('a'));var hs=ls.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});function u(){var y=window.scrollY+140,at=0;hs.forEach(function(h,i){if(h&&h.offsetTop<=y)at=i;});ls.forEach(function(a,i){a.classList.toggle('ativo',i===at);});}window.addEventListener('scroll',u,{passive:true});u();})();</script>`;
 
-// Banner fixo do blog (rebranding 2026-09): foto oficial do Prof. Tenente Gustavo.
+// Banner fixo do blog (rebranding 2026-09): foto oficial do Professor Tenente Gustavo.
 // Aparece no topo da lista de artigos e de cada artigo. Versao leve no celular.
 const BANNER = `  <a class="blog-banner" href="/" aria-label="Professor Tenente Gustavo — Mentor de concursos da PMMG">
     <img src="/banner-tenente-gustavo.webp" srcset="/banner-tenente-gustavo-1200.webp 1200w, /banner-tenente-gustavo.webp 2000w" sizes="(max-width: 1100px) 100vw, 1080px" width="2000" height="667" alt="Professor Tenente Gustavo — Mentor de concursos da PMMG: CFO, CHO, Soldados, Sargentos e Polícia Penal" fetchpriority="high" decoding="async" />
@@ -160,7 +160,7 @@ const CTA = `
       <div class="shell">
         <div class="cta-band">
           <h2>Estude para a PMMG com método</h2>
-          <p>Trilha guiada, simulados, flashcards e acompanhamento do Prof. Tenente Gustavo — para Soldado, Sargento, Oficial e CHO.</p>
+          <p>Trilha guiada, simulados, flashcards e acompanhamento do Professor Tenente Gustavo — para Soldado, Sargento, Oficial e CHO.</p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="${MAG}/auth">Entrar na plataforma</a>
             <a class="btn btn-secondary" href="/blog">Ver mais artigos</a>
@@ -278,13 +278,13 @@ function renderIndex(posts) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog da Mentoria MAG | Estudos e Concursos da PMMG (Professor Tenente Gustavo)</title>
-  <meta name="description" content="Artigos sobre como estudar e passar nos concursos da PMMG — Soldado, Sargento, Oficial e CHO — com método científico, pelo Prof. Tenente Gustavo." />
+  <meta name="description" content="Artigos sobre como estudar e passar nos concursos da PMMG — Soldado, Sargento, Oficial e CHO — com método científico, pelo Professor Tenente Gustavo." />
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="${ROOT}/blog" />
   <link rel="stylesheet" href="/seo-pages.css" />
   <link rel="icon" type="image/png" href="/logo-mag.png" />
   <meta property="og:title" content="Blog da Mentoria MAG | Estudos e Concursos da PMMG" />
-  <meta property="og:description" content="Como estudar e passar nos concursos da PMMG, com método científico do Prof. Tenente Gustavo." />
+  <meta property="og:description" content="Como estudar e passar nos concursos da PMMG, com método científico do Professor Tenente Gustavo." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="${ROOT}/blog" />
   <meta property="og:image" content="${ROOT}/og-mag-azul.jpg" />
@@ -303,7 +303,7 @@ ${BANNER}
         <div>
           <span class="kicker">Artigos · PMMG</span>
           <h1>Blog da <em>Mentoria MAG</em></h1>
-          <p class="lead">Estratégia, rotina e a ciência da aprendizagem aplicadas aos concursos da Polícia Militar de Minas Gerais — escritas por quem viveu por dentro a carreira.</p>
+          <p class="lead">Estratégia, rotina e a ciência da aprendizagem aplicadas aos concursos da Polícia Militar de Minas Gerais — escritas pelo Professor Tenente Gustavo.</p>
           <div class="breadcrumbs"><a href="/">Mentoria MAG</a> / Blog</div>
         </div>
       </div>
