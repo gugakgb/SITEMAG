@@ -350,7 +350,7 @@ function Posto({ extras }) {
               }
               </div>
               <a className="btn btn-primary ir" href={principal.href} target="_blank" rel="noopener">
-                Iniciar briefing <span className="arrow">→</span>
+                Ver o curso <span className="arrow">→</span>
               </a>
             </div>
           }
@@ -377,7 +377,7 @@ const MISSIONS = [
   code: "CFO",
   title: "Curso de Formação de Oficiais",
   status: "ativo",
-  statusLabel: "Ativo · Recrutando",
+  statusLabel: "Inscrições abertas",
   brief: "Preparação estratégica completa para quem almeja a carreira de Oficial da PMMG.",
   duration: "ATÉ A APROVAÇÃO",
   next: "Em aberto",
@@ -388,7 +388,7 @@ const MISSIONS = [
   code: "CFSD",
   title: "Curso de Formação de Soldados",
   status: "ativo",
-  statusLabel: "Ativo · Recrutando",
+  statusLabel: "Inscrições abertas",
   brief: "Base sólida, constância e evolução prática até o dia da prova. Para quem começa do zero.",
   duration: "ATÉ A APROVAÇÃO",
   next: "Em aberto",
@@ -399,7 +399,7 @@ const MISSIONS = [
   code: "CFS",
   title: "Curso de Formação de Sargentos",
   status: "ativo",
-  statusLabel: "Ativo · Recrutando",
+  statusLabel: "Inscrições abertas",
   brief: "Preparação técnica e tática para a progressão à graduação de Sargento da PMMG. Liderança operacional.",
   duration: "1 ANO",
   next: "Em aberto",
@@ -410,7 +410,7 @@ const MISSIONS = [
   code: "CHO",
   title: "Curso de Habilitação de Oficiais",
   status: "missao",
-  statusLabel: "Em missão",
+  statusLabel: "Sob consulta",
   brief: "Profundidade teórica, precisão jurídica e preparação refinada para Sargentos e Subtenentes que desejam ser Oficiais da PMMG.",
   duration: "ATÉ A APROVAÇÃO",
   next: "Consultar",
@@ -442,7 +442,7 @@ function Missions() {
             </dl>
 
             <div className="mission-cta">
-              <span>Iniciar briefing</span>
+              <span>Ver o curso</span>
               <span className="arrow">→</span>
             </div>
           </article>
@@ -534,7 +534,7 @@ function ExtraCourses({ courses }) {
             <article className="mission" data-status="ativo">
               <div className="mission-head">
                 <div className="mission-code">{cardCode(c)}</div>
-                <div className="mission-status">Ativo · Venda avulsa</div>
+                <div className="mission-status">Disponível para compra</div>
               </div>
 
               <div className="mission-title">{c.product_name}</div>
@@ -551,7 +551,7 @@ function ExtraCourses({ courses }) {
               </dl>
 
               <div className="mission-cta">
-                <span>Iniciar briefing</span>
+                <span>Ver o curso</span>
                 <span className="arrow">→</span>
               </div>
             </article>
