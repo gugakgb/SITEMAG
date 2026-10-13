@@ -276,7 +276,7 @@ function Hero() {
         <div className="hb-selo">
           <i>Professor</i>
           <b>Tenente Gustavo</b>
-          <span>Mentor da Mentoria MAG · Neurocientista</span>
+          <span>Mentor da Mentoria MAG · Esp. Neurociência Cognitiva</span>
         </div>
       </div>
     </section>);
@@ -622,7 +622,7 @@ function MentorStrip() {
           <div className="mentor-tag">Mentor · Mentoria MAG</div>
           <div className="mentor-name"><small className="mentor-prof">Professor</small>Tenente Gustavo</div>
           <div className="mentor-creds">
-                        <span className="cred">Neurocientista</span>
+                        <span className="cred">Esp. Neurociência Cognitiva</span>
             <span className="cred">Direito Militar</span>
           </div>
         </div>
