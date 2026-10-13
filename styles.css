@@ -436,6 +436,16 @@ body[data-fonts="editorial"] .mentor-name{text-transform:none;letter-spacing:0}
   font-size:clamp(58px,8.6vw,132px);line-height:.86;letter-spacing:.005em;color:var(--ink);margin-top:16px}
 .hero-b h1 em{font-style:normal;color:var(--gold);display:block}
 .hb-sub{color:var(--ink-2);font-size:18px;line-height:1.6;max-width:46ch;margin-top:20px}
+/* Bordão em escada: cada palavra sobe um degrau; APROVA fica no topo, em ouro */
+.hb-degraus{position:relative}
+.hb-degraus::before{content:"";position:absolute;left:-18px;top:.18em;bottom:.12em;width:2px;
+  background:linear-gradient(to top, transparent, var(--gold) 70%)}
+.hb-degraus span,.hb-degraus em{display:block;font-style:normal}
+.hb-degraus span:nth-of-type(2){padding-left:.7em}
+.hb-degraus em{padding-left:1.4em}
+@media (max-width:560px){ .hb-degraus span:nth-of-type(2){padding-left:.35em} .hb-degraus em{padding-left:.7em} }
+.hb-pergunta{color:var(--ink-2);font-size:17px;line-height:1.6;max-width:46ch;margin-top:18px}
+.hb-pergunta strong{color:var(--ink);font-weight:600}
 .hb-acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 .hb-foto{position:relative;justify-self:center;width:min(420px,100%);aspect-ratio:4/5}
 .hb-foto::before{content:"";position:absolute;inset:-14px;border-radius:36px;border:1.5px solid color-mix(in oklab, var(--gold) 55%, transparent);transform:rotate(-3deg);pointer-events:none}

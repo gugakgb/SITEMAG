@@ -255,10 +255,16 @@ function Hero() {
     <section className="hero-b page">
       <div className="hb-texto">
         <div className="eyebrow fade-up d1">Preparação PMMG · CFO · CFSD · CFS · CHO</div>
-        <h1 className="fade-up d2">Qual é o seu <em>próximo posto?</em></h1>
+        <h1 className="hb-degraus fade-up d2" aria-label="Estudar certo aprova">
+          <span>Estudar</span>
+          <span>certo</span>
+          <em>aprova</em>
+        </h1>
         <p className="hb-sub fade-up d3">
-          Do civil ao oficial: cada degrau da carreira na Polícia Militar de Minas Gerais
-          tem um caminho. Diga onde você quer chegar e a gente mostra o seu.
+          Trilha pronta, semana a semana. O Radar mostra onde você erra e o Professor corrige o seu estudo de perto.
+        </p>
+        <p className="hb-pergunta fade-up d3">
+          Qual é o seu <strong>próximo posto?</strong> Diga onde você quer chegar e a gente mostra o caminho.
         </p>
         <div className="hb-acts fade-up d4">
           <a className="btn btn-primary" href="#posto">Descobrir meu caminho <span className="arrow">↓</span></a>
