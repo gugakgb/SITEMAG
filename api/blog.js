@@ -3,6 +3,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { marked } from 'marked';
 import { CARTOES_BLOG } from './_blog-cards.js';
+import { pareceCopiaDoChatGPT, textoColadoParaMarkdown } from './_texto-colado.js';
 
 const ROOT = 'https://tenentegustavo.com.br';
 const MAG = 'https://mag.tenentegustavo.com.br';
@@ -117,7 +118,22 @@ function realcarHtml(html) {
     (_, tipo, resto) => caixa(tipo, tipo, resto));
   out = out.replace(/<p>(?:<strong>)?(Aten[çc][ãa]o|Dica|Importante):(?:<\/strong>)?\s*([\s\S]*?)<\/p>/g,
     (_, tipo, resto) => caixa(tipo, tipo, resto));
-  return { html: out, toc };
+  // Alternativas de questão ("**A)** R$ 160"): letra em círculo, sem o ✓ (que sugere "certo").
+  out = out.replace(/<ul>((?:\s*<li><strong>[A-E]\)<\/strong>[\s\S]*?<\/li>)+\s*)<\/ul>/g, '<ul class="alternativas">$1</ul>');
+  // Links para fora do site abrem em outra aba.
+  out = out.replace(/<a href="(https?:\/\/(?!(?:www\.|mag\.)?tenentegustavo\.com\.br)[^"]+)"/g, '<a href="$1" target="_blank" rel="noopener"');
+  // Seção "Fontes"/"Referências": vai para uma caixa discreta no fim.
+  const citacoes = [];
+  const fonteH2 = toc.find((t) => /^(fontes|refer[êe]ncias)/i.test(t.text));
+  if (fonteH2) {
+    const ini = out.indexOf(`<h2 id="${fonteH2.id}">`);
+    const prox = out.indexOf('<h2', ini + 4);
+    const fim = prox === -1 ? out.length : prox;
+    const trecho = out.slice(ini, fim);
+    for (const m of trecho.matchAll(/href="(https?:[^"]+)"/g)) citacoes.push(m[1].replace(/&amp;/g, '&'));
+    out = `${out.slice(0, ini)}<section class="fontes">${trecho}</section>${out.slice(fim)}`;
+  }
+  return { html: out, toc, citacoes };
 }
 
 // Chamada para a plataforma no meio do artigo (antes do 3o subtitulo).
@@ -185,7 +201,12 @@ function renderArticle(p) {
   const cat = p.category || 'Artigo';
   const mins = readingOf(p);
   const date = fmtDate(p.published_at);
-  const md = comProfessor(estruturarTextoCorrido(normalizeMarkdown(p.content_md)));
+  // Texto colado do ChatGPT/Word sem nenhuma formatação: reconstrói subtítulos, listas e fontes.
+  // (Só quando os parágrafos vêm separados por quebra simples, que é como o ChatGPT copia.)
+  const original = String(p.content_md || '').replace(/\r\n?/g, '\n');
+  const md = comProfessor(pareceCopiaDoChatGPT(original)
+    ? textoColadoParaMarkdown(original, p.title || '').md
+    : estruturarTextoCorrido(normalizeMarkdown(original)));
   const realce = realcarHtml(marked.parse(md, { mangle: false, headerIds: false }));
   const toc = realce.toc;
   const bodyHtml = inserirCtaMeio(realce.html, toc);
@@ -204,6 +225,7 @@ function renderArticle(p) {
     dateModified: (p.updated_at || p.published_at || '').slice(0, 10),
     image: og,
     mainEntityOfPage: url,
+    ...(realce.citacoes.length ? { citation: realce.citacoes } : {}),
   };
 
   return `<!DOCTYPE html>

@@ -731,3 +731,37 @@ h1 em, h2 em { font-style: normal; color: var(--gold); }
   .prose > p:first-of-type { font-size: 19.5px; }
   .prose ul, .prose ol { padding: 14px 14px; }
 }
+
+/* ===========================================================
+   TEXTO COLADO (18/10/2026): alternativas de questão e fontes
+   =========================================================== */
+.prose ul.alternativas li { padding-left: 40px; }
+.prose ul.alternativas li::before { display: none; }
+.prose ul.alternativas li > strong:first-child {
+  position: absolute;
+  left: 0; top: 0.1em;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: #fff;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  font-size: 13px;
+  line-height: 1;
+}
+.prose .fontes {
+  margin: 56px 0 0;
+  padding: 22px 24px 8px;
+  border-top: 1px solid var(--line);
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+}
+.prose .fontes h2 { margin: 0 0 12px; font-size: 22px; }
+.prose .fontes h2::before { width: 30px; height: 3px; margin-bottom: 10px; }
+.prose .fontes ul { background: none; border: 0; padding: 0; gap: 12px; }
+.prose .fontes li { font-size: 15px; line-height: 1.55; color: var(--ink-soft); padding-left: 0; }
+.prose .fontes li::before { display: none; }
+.prose .fontes a { word-break: break-word; }
