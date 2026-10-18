@@ -1,7 +1,9 @@
 // app.jsx — Mentoria MAG · v2
 // Cursos no centro, mentor como faixa, fundo tático que evolui com o scroll.
+// Não é mais lido pelo navegador: `npm run build:home` monta a página pronta
+// no index.html e gera o app.js (React de produção, sem Babel).
 
-const { useEffect, useRef, useState } = React;
+import React, { useEffect, useRef, useState } from "react";
 
 // ── Tweak defaults ─────────────────────────────────────────────────────────
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -696,4 +698,4 @@ function App() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+export default App;
