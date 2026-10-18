@@ -765,3 +765,35 @@ h1 em, h2 em { font-style: normal; color: var(--gold); }
 .prose .fontes li { font-size: 15px; line-height: 1.55; color: var(--ink-soft); padding-left: 0; }
 .prose .fontes li::before { display: none; }
 .prose .fontes a { word-break: break-word; }
+
+/* ===========================================================
+   SOBRE O AUTOR + LEIA TAMBÉM (18/10/2026)
+   =========================================================== */
+.prose .autor-box {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  margin: 48px 0 0;
+  padding: 20px 22px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--ouro);
+  border-radius: 6px 18px 18px 6px;
+  box-shadow: var(--soft-shadow);
+}
+.prose .autor-box img {
+  width: 76px; height: 76px;
+  flex: 0 0 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 18%;
+  border: 3px solid var(--gold-soft);
+}
+.prose .autor-box .k { display: block; font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
+.prose .autor-box b { display: block; font-family: var(--serif); font-size: 24px; line-height: 1.1; text-transform: uppercase; color: var(--ink); margin: 4px 0 6px; }
+.prose .autor-box p { margin: 0 0 8px; font-size: 15.5px; line-height: 1.6; color: var(--ink-soft); }
+.prose .autor-box a { font-size: 14px; font-weight: 700; text-decoration: none; color: var(--gold); }
+.leia-tambem { padding-bottom: 0; }
+.leia-tambem .post-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) { .leia-tambem .post-grid { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .prose .autor-box { flex-direction: column; } }

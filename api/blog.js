@@ -187,7 +187,52 @@ const CTA = `
 
 const FOOTER = `<footer class="footer"><div class="shell"><p>© 2026 Mentoria MAG · Professor Tenente Gustavo. Conteúdo informativo e independente sobre concursos da PMMG.</p></div></footer>`;
 
-function renderArticle(p) {
+// "Leia também": 3 artigos parecidos (mesma categoria + palavras do título em comum).
+const PALAVRAS_FRACAS = new Set(['para', 'como', 'concurso', 'concursos', 'pmmg', 'sobre', 'voce', 'seus', 'suas', 'mais', 'qual', 'quais', 'entre', 'sem', 'com']);
+const palavrasDe = (t) => new Set(String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+  .split(/[^a-z0-9]+/).filter((w) => w.length >= 4 && !PALAVRAS_FRACAS.has(w)));
+function escolherRelacionados(p, outros) {
+  const base = palavrasDe(`${p.title} ${p.category}`);
+  return outros
+    .filter((o) => o.slug !== p.slug)
+    .map((o) => {
+      let pts = o.category && o.category === p.category ? 3 : 0;
+      for (const w of palavrasDe(o.title)) if (base.has(w)) pts += 2;
+      return { o, pts };
+    })
+    .sort((a, b) => b.pts - a.pts || String(b.o.published_at).localeCompare(String(a.o.published_at)))
+    .slice(0, 3)
+    .map((x) => x.o);
+}
+const leiaTambemHtml = (lista) => (lista.length ? `
+    <section class="section leia-tambem" aria-label="Leia também">
+      <div class="shell">
+        <h2 class="section-title">Leia também</h2>
+        <div class="post-grid">${lista.map((o) => `
+          <a class="post-card" href="/blog/${esc(o.slug)}">
+            <span class="tag">${esc(o.category || 'Artigo')}</span>
+            <h3>${esc(comProfessor(o.title))}</h3>
+            <p>${esc(comProfessor(o.excerpt || ''))}</p>
+            <span class="more">Ler artigo →</span>
+          </a>`).join('')}
+        </div>
+      </div>
+    </section>` : '');
+
+// Caixa do autor no fim do artigo (quem escreve conta para o Google e para o leitor).
+// Regras: "Professor" sempre antes de Tenente; nunca "Oficial da PMMG".
+const AUTOR_BOX = `
+      <aside class="autor-box" aria-label="Sobre o autor">
+        <img src="/foto-gustavo-retrato.webp" alt="Professor Tenente Gustavo" width="96" height="96" loading="lazy" decoding="async" />
+        <div>
+          <span class="k">Sobre o autor</span>
+          <b>Professor Tenente Gustavo</b>
+          <p>Mentor da Mentoria MAG, especialista em Neurociência Cognitiva e em Direito Militar. Ajuda candidatos aos concursos da PMMG (Soldado, Sargento, Oficial e CHO) a estudar com método, usando o que a ciência da aprendizagem já comprovou.</p>
+          <a href="/curso-preparatorio-pmmg">Conheça a Mentoria MAG →</a>
+        </div>
+      </aside>`;
+
+function renderArticle(p, outros = []) {
   const url = `${ROOT}/blog/${p.slug}`;
   const title = comProfessor(p.title || '');
   const seoTitle = comProfessor(p.seo_title) || title;
@@ -219,7 +264,7 @@ function renderArticle(p) {
     '@type': p.schema_type === 'NewsArticle' ? 'NewsArticle' : 'BlogPosting',
     headline: title,
     description: desc,
-    author: { '@type': 'Person', name: nomeDoAutor(p.author_name) },
+    author: { '@type': 'Person', name: nomeDoAutor(p.author_name), url: `${ROOT}/curso-preparatorio-pmmg`, jobTitle: 'Mentor da Mentoria MAG' },
     publisher: { '@type': 'Organization', name: 'Mentoria MAG', logo: { '@type': 'ImageObject', url: `${ROOT}/logo-mag.png` } },
     datePublished: (p.published_at || '').slice(0, 10),
     dateModified: (p.updated_at || p.published_at || '').slice(0, 10),
@@ -235,7 +280,7 @@ function renderArticle(p) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${esc(seoTitle)}</title>
   <meta name="description" content="${esc(desc)}" />
-  <meta name="robots" content="index,follow" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
   <link rel="canonical" href="${url}" />
   <link rel="stylesheet" href="/seo-pages.css" />
   <link rel="icon" type="image/png" href="/logo-mag.png" />
@@ -272,8 +317,10 @@ ${tocHtml}
       <article class="prose">
 ${resumoHtml}
 ${bodyHtml}
+${AUTOR_BOX}
       </article>
     </div>
+${leiaTambemHtml(escolherRelacionados(p, outros))}
 ${CTA}
   </main>
 ${FOOTER}
@@ -301,7 +348,7 @@ function renderIndex(posts) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog da Mentoria MAG | Estudos e Concursos da PMMG (Professor Tenente Gustavo)</title>
   <meta name="description" content="Artigos sobre como estudar e passar nos concursos da PMMG — Soldado, Sargento, Oficial e CHO — com método científico, pelo Professor Tenente Gustavo." />
-  <meta name="robots" content="index,follow" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
   <link rel="canonical" href="${ROOT}/blog" />
   <link rel="stylesheet" href="/seo-pages.css" />
   <link rel="icon" type="image/png" href="/logo-mag.png" />
@@ -358,9 +405,12 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 's-maxage=10, stale-while-revalidate=30');
 
     if (slug) {
-      const { data } = await supabase.from('blog_posts').select('*').eq('slug', slug).eq('status', 'published').maybeSingle();
+      const [{ data }, { data: outros }] = await Promise.all([
+        supabase.from('blog_posts').select('*').eq('slug', slug).eq('status', 'published').maybeSingle(),
+        supabase.from('blog_posts').select('slug, title, excerpt, category, published_at').eq('status', 'published').order('published_at', { ascending: false }).limit(60),
+      ]);
       if (!data) { res.statusCode = 404; return res.end(notFound()); }
-      return res.end(renderArticle(data));
+      return res.end(renderArticle(data, outros || []));
     }
     const { data } = await supabase.from('blog_posts').select('*').eq('status', 'published').order('published_at', { ascending: false });
     return res.end(renderIndex(data || []));

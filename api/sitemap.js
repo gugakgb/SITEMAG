@@ -19,13 +19,17 @@ export default async function handler(req, res) {
     posts = data || [];
   } catch (_) { /* segue só com as estáticas */ }
 
-  const today = new Date().toISOString().slice(0, 10);
+  // Data de atualização só quando ela é VERDADEIRA: o Google aprende a ignorar o
+  // sitemap que diz "mudou hoje" todo dia. Páginas fixas ficam sem data; o /blog
+  // leva a data do artigo mais recente; cada artigo, a da última edição.
+  const dia = (p) => String(p.updated_at || p.published_at || '').slice(0, 10);
+  const maisRecente = posts.map(dia).filter(Boolean).sort().pop();
   const url = (loc, prio, lastmod, freq = 'weekly') =>
-    `  <url>\n    <loc>${ROOT}${loc}</loc>\n    <lastmod>${lastmod || today}</lastmod>\n    <changefreq>${freq}</changefreq>\n    <priority>${prio}</priority>\n  </url>`;
+    `  <url>\n    <loc>${ROOT}${loc}</loc>\n${lastmod ? `    <lastmod>${lastmod}</lastmod>\n` : ''}    <changefreq>${freq}</changefreq>\n    <priority>${prio}</priority>\n  </url>`;
 
   const body = [
-    ...STATIC.map(([loc, prio]) => url(loc, prio)),
-    ...posts.map((p) => url(`/blog/${p.slug}`, '0.8', (p.updated_at || p.published_at || today).slice(0, 10), 'monthly')),
+    ...STATIC.map(([loc, prio]) => url(loc, prio, loc === '/blog' ? maisRecente : '')),
+    ...posts.map((p) => url(`/blog/${p.slug}`, '0.8', dia(p), 'monthly')),
   ].join('\n');
 
   res.setHeader('Content-Type', 'application/xml; charset=utf-8');
