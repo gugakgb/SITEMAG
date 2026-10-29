@@ -295,6 +295,14 @@ function renderArticle(p, outros = []) {
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="${esc(og)}" />
   <script type="application/ld+json">${JSON.stringify(ld)}</script>
+<!-- Google tag (Google Ads): conta visitantes do site para o público "Visitantes do site" -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18239290610"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'AW-18239290610');
+</script>
 </head>
 <body>
   <div class="read-progress" id="read-progress"></div>
@@ -362,6 +370,14 @@ function renderIndex(posts) {
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="${ROOT}/og-mag-azul.jpg" />
   <script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Blog', name: 'Blog da Mentoria MAG', url: `${ROOT}/blog`, publisher: { '@type': 'Organization', name: 'Mentoria MAG', logo: { '@type': 'ImageObject', url: `${ROOT}/logo-mag.png` } } })}</script>
+<!-- Google tag (Google Ads): conta visitantes do site para o público "Visitantes do site" -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18239290610"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'AW-18239290610');
+</script>
 </head>
 <body>
 ${NAV}
