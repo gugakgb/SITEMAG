@@ -232,6 +232,37 @@ const AUTOR_BOX = `
         </div>
       </aside>`;
 
+// Materiais para baixar (cadastrados no painel, campo "downloads"). Só entra link http(s);
+// item sem link não vira cartão.
+const tamanhoArquivo = (bytes) => {
+  const n = Number(bytes);
+  if (!n || n <= 0) return '';
+  if (n < 1024 * 1024) return `${Math.max(1, Math.round(n / 1024))} KB`;
+  return `${(n / (1024 * 1024)).toFixed(1).replace('.', ',')} MB`;
+};
+function renderMateriais(lista) {
+  const itens = (Array.isArray(lista) ? lista : []).filter((d) => d && /^https?:\/\//i.test(String(d.url || '')));
+  if (!itens.length) return '';
+  const linhas = itens.map((d) => {
+    const titulo = comProfessor(d.title || d.fileName || 'Material para baixar');
+    const meta = [d.fileType, tamanhoArquivo(d.sizeBytes)].filter(Boolean).join(' · ');
+    return `
+          <div class="item">
+            <div class="txt">
+              <b>${esc(titulo)}</b>
+              ${d.description ? `<p>${esc(comProfessor(d.description))}</p>` : ''}
+              ${meta ? `<small>${esc(meta)}</small>` : ''}
+            </div>
+            <a class="baixar" href="${esc(d.url)}" target="_blank" rel="noopener" download>Baixar</a>
+          </div>`;
+  }).join('');
+  return `
+      <aside class="materiais" aria-label="Materiais para baixar">
+        <span class="k">Para baixar</span>
+        <p class="titulo">Materiais deste artigo</p>${linhas}
+      </aside>`;
+}
+
 function renderArticle(p, outros = []) {
   const url = `${ROOT}/blog/${p.slug}`;
   const title = comProfessor(p.title || '');
@@ -259,6 +290,7 @@ function renderArticle(p, outros = []) {
   const tocHtml = toc.length >= 3
     ? `<details class="post-toc" open><summary>Neste artigo <span>${toc.length} tópicos</span></summary><ol>${toc.map((t) => `<li><a href="#${t.id}">${esc(t.text)}</a></li>`).join('')}</ol></details>`
     : '';
+  const materiaisHtml = renderMateriais(p.downloads);
   const ld = {
     '@context': 'https://schema.org',
     '@type': p.schema_type === 'NewsArticle' ? 'NewsArticle' : 'BlogPosting',
@@ -325,6 +357,7 @@ ${tocHtml}
       <article class="prose">
 ${resumoHtml}
 ${bodyHtml}
+${materiaisHtml}
 ${AUTOR_BOX}
       </article>
     </div>
